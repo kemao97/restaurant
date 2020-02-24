@@ -1,0 +1,104 @@
+import {gql} from 'apollo-server-express';
+import {encodeGlobalID} from '../../utils';
+import {get} from 'lodash';
+
+export const typename = 'Food';
+
+const foodInput = gql`
+  input CreateFoodInput {
+    name: String!
+    description: String!
+  }
+  
+  input UpdateFoodInput {
+    name: String!
+    description: String!
+  }
+  
+  input FoodSearch {
+    name: String
+    description: String
+  }
+  
+  input FoodPageOptions {
+    pagination: Pagination
+    search: FoodSearch
+  }
+`;
+
+const foodPage = gql`
+  type FoodPage {
+    foods: [Food!]!
+    meta: PageMeta!
+  }
+  
+  extend type Query {
+    foods(options: FoodPageOptions): FoodPage
+  }
+`;
+
+const foodCRUD = gql`
+  type Food {
+    id: ID!
+    name: String!
+    description: String!
+    createdAt: DateTime
+    updatedAt: DateTime
+  }
+  
+  extend type Query {
+    food(id: ID!): Food
+      @retrieve(objectName: "Food", callResolver: false)
+  }
+  
+  extend type Mutation {
+    createFood(input: CreateFoodInput!): Food
+      @create(objectName: "Food")
+    updateFood(id: ID!, input: UpdateFoodInput!): Food
+      @update(objectName: "Food")
+    deleteFood(id: ID!): Boolean
+      @delete(objectName: "Food")
+  }
+`;
+
+export const foodQueries = [
+  foodInput,
+  foodPage,
+  foodCRUD,
+];
+
+export const generateFoodResolvers = (models) => {
+  const {FoodModel} = models;
+  return {
+    Query: {
+      foods: async (obj, args, context, info) => {
+        const options = args.options;
+        const name = get(options, 'search.name');
+        const description = get(options, 'search.description');
+        const offset = get(options, 'pagination.offset');
+        const limit = get(options, 'pagination.limit');
+        const optionSearch = {
+          where: {
+            name: {$like: `%${name || ''}%`},
+            description: {$like: `%${description || ''}%`},
+          },
+        };
+        const foods = await FoodModel.findAll({
+          ...optionSearch,
+          offset: offset,
+          limit: limit,
+        });
+        const totalRecord = await FoodModel.count(optionSearch);
+        return {
+          foods,
+          meta: {
+            totalRecord,
+          },
+        };
+      },
+    },
+    Food: {
+      id: (obj, args, context, info) => encodeGlobalID(typename, obj.id),
+    },
+  };
+};
