@@ -17,7 +17,7 @@ export const generateAuthResolvers = (models) => {
   return {
     Mutation: {
       login: async (obj, args, context, info) => {
-        const viewer = context.viewer;
+        const {viewer, res} = context;
         if (viewer) {
           throw new Error(`You was logged`);
         }
@@ -30,7 +30,13 @@ export const generateAuthResolvers = (models) => {
         if (!user || !(await comparePassword(password, user.password))) {
           throw new Error('Email or password not valid');
         }
-        return createToken({userId: user.id});
+        const token = await createToken({userId: user.id});
+        res.cookie('Authorization', token, {
+          httpOnly: true,
+          secure: false,
+          maxAge: 86400 * 1000 * 7,
+        });
+        return token;
       },
     },
   };

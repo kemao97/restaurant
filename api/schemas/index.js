@@ -60,16 +60,16 @@ const createSchema = (models) => {
   const context = async ({req, res}) => {
     let viewer = null;
 
-    const {headers} = req;
+    const {headers, cookies} = req;
     const authorization = headers.Authorization || headers.authorization;
-    const token = authorization && authorization.slice('Bearer '.length);
+    const token = cookies.Authorization || authorization && authorization.slice('Bearer '.length);
     if (token) {
       const payload = getPayloadFromToken(token);
       const {UserModel} = models;
       viewer = await UserModel.findByPk(payload.userId);
     }
 
-    return {viewer, models};
+    return {viewer, models, res};
   };
 
   return {

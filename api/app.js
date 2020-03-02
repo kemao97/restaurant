@@ -19,9 +19,12 @@ const models = createModels();
 const schema = createSchema(models);
 const server = new ApolloServer({
   ...schema,
-  tracing: true,
 });
-server.applyMiddleware({app});
+const cors = {
+  origin: 'http://localhost:3000',
+  credentials: true,
+};
+server.applyMiddleware({app, cors});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
