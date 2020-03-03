@@ -8,7 +8,8 @@ export const authQueries = gql`
   }
 
   extend type Mutation {
-    login(input: LoginInput!): String!
+    login(input: LoginInput!): User!
+    logout: Boolean!
   }
 `;
 
@@ -36,7 +37,12 @@ export const generateAuthResolvers = (models) => {
           secure: false,
           maxAge: 86400 * 1000 * 7,
         });
-        return token;
+        return user;
+      },
+      logout: (obj, args, context, info) => {
+        const {res} = context;
+        res.clearCookie('Authorization');
+        return true;
       },
     },
   };

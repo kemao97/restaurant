@@ -3,19 +3,19 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import {compose} from 'recompose';
-import loginCTN from './loginCTN';
 import PropTypes from 'prop-types';
+import {Alert} from '@material-ui/lab';
+import UserCreateCTN from './UserCreateCTN';
 
-const LoginCPN = ({
+const UserCreate = ({
   onChange,
   onSubmit,
+  alert,
 }) => {
   const classes = useStyles();
 
@@ -27,13 +27,16 @@ const LoginCPN = ({
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Sign Up
         </Typography>
         <form
           className={classes.form}
           noValidate
           onSubmit={onSubmit}
         >
+          {alert.message && (
+            <Alert variant='filled' severity={alert.color}>{alert.message}</Alert>
+          )}
           <TextField
             variant="outlined"
             margin="normal"
@@ -58,10 +61,6 @@ const LoginCPN = ({
             autoComplete="current-password"
             onChange={onChange}
           />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
           <Button
             type="submit"
             fullWidth
@@ -69,7 +68,7 @@ const LoginCPN = ({
             color="primary"
             className={classes.submit}
           >
-            Sign In
+            Sign Up
           </Button>
         </form>
       </div>
@@ -77,9 +76,10 @@ const LoginCPN = ({
   );
 };
 
-LoginCPN.propTypes = {
+UserCreate.propTypes = {
   onChange: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  alert: PropTypes.object.isRequired,
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -103,5 +103,5 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default compose(
-  loginCTN,
-)(LoginCPN);
+  UserCreateCTN,
+)(UserCreate);

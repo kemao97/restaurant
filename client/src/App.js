@@ -1,20 +1,28 @@
 import React from 'react';
 import {ApolloProvider} from '@apollo/react-hooks';
-import {ApolloClient, InMemoryCache, HttpLink, Observable, ApolloLink} from 'apollo-boost';
-import {BrowserRouter, Redirect, Switch, Route} from 'react-router-dom';
-import LoginPage from './pages/login';
+import {ApolloClient, ApolloLink, HttpLink, InMemoryCache, Observable} from 'apollo-boost';
 import {onError} from 'apollo-link-error';
+import {ThemeProvider} from '@material-ui/styles';
+import theme from './theme';
+import Routes from './Routes';
+import {Provider} from 'react-redux';
+import {PersistGate} from 'redux-persist/lib/integration/react';
+import {persist, store} from './redux/store';
+import {CookiesProvider} from 'react-cookie';
 
 const App = () => {
   return (
-    <ApolloProvider client={client}>
-      <BrowserRouter>
-        <Switch>
-          <Route path='/login' exact component={LoginPage} />
-          <Route path='*' exact component={() => <Redirect to="/" />} />
-        </Switch>
-      </BrowserRouter>
-    </ApolloProvider>
+    <ThemeProvider theme={theme}>
+      <ApolloProvider client={client}>
+        <Provider store={store}>
+          <CookiesProvider>
+            <PersistGate persistor={persist} loading={<div>hello world</div>}>
+              <Routes />
+            </PersistGate>
+          </CookiesProvider>
+        </Provider>
+      </ApolloProvider>
+    </ThemeProvider>
   );
 };
 
