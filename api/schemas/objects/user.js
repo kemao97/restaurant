@@ -10,6 +10,13 @@ const userInputs = gql`
   input CreateUserInput {
     email: String!
     password: String!
+    address: String
+    phone: String
+  }
+  
+  input UpdateUserInput {
+    address: String
+    phone: String
   }
   
   input UserSearch {
@@ -46,6 +53,8 @@ const userCRUD = gql`
   type User {
     id: ID!
     email: String!
+    address: String!
+    phone: String
     createdAt: DateTime
     updatedAt: DateTime
   }
@@ -59,6 +68,7 @@ const userCRUD = gql`
   extend type Mutation {
     createUser(input: CreateUserInput!): User
       @validate(yupName: "yupCreateUser")
+    updateProfile(input: UpdateUserInput!): User
     deleteUser(id: ID!): Boolean
       @delete(objectName: "User")
   }
@@ -124,6 +134,16 @@ export const generateUserResolvers = (models) => {
         const input = args.input;
         input['password'] = await hashPassword(input['password']);
         return UserModel.create(input);
+      },
+      updateProfile: async (obj, args, context, info) => {
+        const input = args.input;
+        const viewer = context.viewer;
+        const {UserModel} = context.models;
+        const user = await UserModel.findByPk(viewer.id);
+        if (!user) {
+          throw new Error('please login before perform this action');
+        }
+        return user.update(input);
       },
     },
     User: {

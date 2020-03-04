@@ -5,9 +5,17 @@ const generateUserModel = (sequelize, DataTypes) => {
       primaryKey: true,
       defaultValue: DataTypes.UUIDV4,
     },
-    email: DataTypes.STRING,
+    email: {
+      type: DataTypes.STRING,
+      unique: true,
+    },
     password: DataTypes.STRING,
-  });
+    address: {
+      type: DataTypes.STRING,
+      defaultValue: '',
+    },
+    phone: DataTypes.STRING,
+  }, {tableName: 'Users'});
   User.associate = (models) => {
     // associations can be defined here
   };

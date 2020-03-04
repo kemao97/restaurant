@@ -1,27 +1,19 @@
-const createUser = {
+const createRole = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Users', {
+    return queryInterface.createTable('Role', {
       id: {
         primaryKey: true,
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
       },
-      email: {
+      name: {
         type: Sequelize.STRING(100),
         allowNull: false,
         unique: true,
       },
-      password: {
-        type: Sequelize.STRING(100),
+      description: {
+        type: Sequelize.STRING(500),
         allowNull: false,
-      },
-      address: {
-        type: Sequelize.STRING(200),
-        allowNull: false,
-      },
-      phone: {
-        type: Sequelize.STRING(20),
-        allowNull: true,
       },
       createdAt: {
         allowNull: false,
@@ -36,8 +28,8 @@ const createUser = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Users');
+    return queryInterface.dropTable('Role');
   },
 };
 
-export default createUser;
+export default createRole;

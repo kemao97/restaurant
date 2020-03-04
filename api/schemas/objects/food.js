@@ -8,11 +8,13 @@ const foodInput = gql`
   input CreateFoodInput {
     name: String!
     description: String!
+    price: Int!
   }
   
   input UpdateFoodInput {
     name: String!
     description: String!
+    price: Int!
   }
   
   input FoodSearch {
@@ -42,8 +44,10 @@ const foodCRUD = gql`
     id: ID!
     name: String!
     description: String!
+    price: Int
     createdAt: DateTime
     updatedAt: DateTime
+    foodAttachments: [FoodAttachment!]!
   }
   
   extend type Query {
@@ -99,6 +103,9 @@ export const generateFoodResolvers = (models) => {
     },
     Food: {
       id: (obj, args, context, info) => encodeGlobalID(typename, obj.id),
+      foodAttachments: (food, args, context, info) => {
+        return food.getFoodAttachments();
+      },
     },
   };
 };

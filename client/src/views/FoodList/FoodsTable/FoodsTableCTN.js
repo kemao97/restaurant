@@ -3,14 +3,14 @@ import {compose, withHandlers, withProps, withState} from 'recompose';
 import {graphql} from '@apollo/react-hoc';
 import {withRouter} from 'react-router-dom';
 
-const USERS_QUERY = gql`
-  query users($options: UserPageOptions) {
-    users(options: $options) {
-      users {
+const FOODS_QUERY = gql`
+  query foods($options: FoodPageOptions) {
+    foods(options: $options) {
+      foods {
         id
-        email
-        address
-        phone
+        name
+        description
+        price
         createdAt
         updatedAt
       }
@@ -21,9 +21,9 @@ const USERS_QUERY = gql`
   }
 `;
 
-const DELETE_USER = gql`
-  mutation deleteUser($id: ID!) {
-    deleteUser(id: $id)
+const DELETE_FOOD = gql`
+  mutation deleteFood($id: ID!) {
+    deleteFood(id: $id)
   }
 `;
 
@@ -35,8 +35,8 @@ const paginationInit = {
 export default compose(
   withRouter,
   withState('pagination', 'updatePagination', paginationInit),
-  graphql(USERS_QUERY, {
-    name: 'usersQuery',
+  graphql(FOODS_QUERY, {
+    name: 'foodsQuery',
     options: ({pagination}) => ({
       variables: {
         options: {
@@ -48,12 +48,12 @@ export default compose(
       },
     }),
   }),
-  graphql(DELETE_USER, {name: 'deleteUserQuery'}),
-  withProps(({usersQuery, pagination}) => {
-    if (!usersQuery.loading && !usersQuery.error) {
+  graphql(DELETE_FOOD, {name: 'deleteFoodQuery'}),
+  withProps(({foodsQuery, pagination}) => {
+    if (!foodsQuery.loading && !foodsQuery.error) {
       return {
-        users: usersQuery.users.users,
-        count: Math.ceil(usersQuery.users.meta.totalRecord / pagination.limit),
+        foods: foodsQuery.foods.foods,
+        count: Math.ceil(foodsQuery.foods.meta.totalRecord / pagination.limit),
       };
     }
   }),
@@ -64,11 +64,11 @@ export default compose(
         offset,
       }));
     },
-    handleDelete: ({deleteUserQuery, usersQuery}) => async (e, id) => {
-      await deleteUserQuery({
+    handleDelete: ({deleteFoodQuery, foodsQuery}) => async (e, id) => {
+      await deleteFoodQuery({
         variables: {id},
       });
-      usersQuery.refetch();
+      foodsQuery.refetch();
     },
   }),
 );

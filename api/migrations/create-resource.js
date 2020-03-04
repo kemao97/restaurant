@@ -1,27 +1,19 @@
-const createUser = {
+const createResource = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Users', {
+    return queryInterface.createTable('Resource', {
       id: {
         primaryKey: true,
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
       },
-      email: {
+      name: {
         type: Sequelize.STRING(100),
         allowNull: false,
         unique: true,
       },
-      password: {
-        type: Sequelize.STRING(100),
+      description: {
+        type: Sequelize.STRING(500),
         allowNull: false,
-      },
-      address: {
-        type: Sequelize.STRING(200),
-        allowNull: false,
-      },
-      phone: {
-        type: Sequelize.STRING(20),
-        allowNull: true,
       },
       createdAt: {
         allowNull: false,
@@ -36,8 +28,8 @@ const createUser = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Users');
+    return queryInterface.dropTable('Resource');
   },
 };
 
-export default createUser;
+export default createResource;

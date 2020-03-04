@@ -4,23 +4,13 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {makeStyles} from '@material-ui/styles';
-import {
-  Avatar,
-  Card,
-  CardActions,
-  CardContent,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Typography,
-} from '@material-ui/core';
-import {compose} from 'recompose';
-import UsersTableCTN from './UsersTableCTN';
+import {Card, CardActions, CardContent, Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
 import {Pagination} from '@material-ui/lab';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
+import FoodsTableCTN from './FoodsTableCTN';
+import {compose} from 'recompose';
+import EditIcon from '@material-ui/icons/Edit';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -42,9 +32,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const UsersTable = ({
+const FoodsTable = ({
   className,
-  users,
+  foods,
   count,
   pagination,
   changePaginate,
@@ -60,42 +50,35 @@ const UsersTable = ({
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Address</TableCell>
-                  <TableCell>Phone</TableCell>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Price</TableCell>
+                  <TableCell>Description</TableCell>
                   <TableCell>Created At</TableCell>
                   <TableCell>Updated At</TableCell>
                   <TableCell>Action</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {users.map((user) => (
+                {foods.map((food) => (
                   <TableRow
                     className={classes.tableRow}
                     hover
-                    key={user.id}
+                    key={food.id}
                   >
+                    <TableCell>{food.name}</TableCell>
+                    <TableCell>{food.price}</TableCell>
+                    <TableCell>{food.description}</TableCell>
                     <TableCell>
-                      <div className={classes.nameContainer}>
-                        <Avatar
-                          className={classes.avatar}
-                          src={user.avatarUrl}
-                        >
-                          {user.name}
-                        </Avatar>
-                        <Typography variant="body1">{user.email}</Typography>
-                      </div>
-                    </TableCell>
-                    <TableCell>{user.address}</TableCell>
-                    <TableCell>{user.phone}</TableCell>
-                    <TableCell>
-                      {moment(user.createdAt).format('DD/MM/YYYY')}
+                      {moment(food.createdAt).format('DD/MM/YYYY')}
                     </TableCell>
                     <TableCell>
-                      {moment(user.updatedAt).format('DD/MM/YYYY')}
+                      {moment(food.updatedAt).format('DD/MM/YYYY')}
                     </TableCell>
                     <TableCell>
-                      <IconButton onClick={(e) => handleDelete(e, user.id)}>
+                      <IconButton href={`/food/${food.id}`}>
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton onClick={(e) => handleDelete(e, food.id)}>
                         <DeleteIcon />
                       </IconButton>
                     </TableCell>
@@ -113,20 +96,20 @@ const UsersTable = ({
   );
 };
 
-UsersTable.propTypes = {
+FoodsTable.propTypes = {
   className: PropTypes.string,
-  users: PropTypes.arrayOf(PropTypes.object),
+  foods: PropTypes.arrayOf(PropTypes.object),
   count: PropTypes.number,
   pagination: PropTypes.object.isRequired,
   changePaginate: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
 };
 
-UsersTable.defaultProps = {
-  users: [],
+FoodsTable.defaultProps = {
+  foods: [],
   count: undefined,
 };
 
 export default compose(
-  UsersTableCTN,
-)(UsersTable);
+  FoodsTableCTN,
+)(FoodsTable);

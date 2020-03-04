@@ -1,27 +1,18 @@
-const createUser = {
+const createFoodAttachment = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Users', {
+    return queryInterface.createTable('FoodAttachment', {
       id: {
-        primaryKey: true,
         type: Sequelize.UUID,
+        primaryKey: true,
         defaultValue: Sequelize.UUIDV4,
       },
-      email: {
-        type: Sequelize.STRING(100),
-        allowNull: false,
-        unique: true,
-      },
-      password: {
-        type: Sequelize.STRING(100),
+      path: {
+        type: Sequelize.STRING(500),
         allowNull: false,
       },
-      address: {
-        type: Sequelize.STRING(200),
+      foodId: {
+        type: Sequelize.UUID,
         allowNull: false,
-      },
-      phone: {
-        type: Sequelize.STRING(20),
-        allowNull: true,
       },
       createdAt: {
         allowNull: false,
@@ -36,8 +27,8 @@ const createUser = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Users');
+    return queryInterface.dropTable('FoodAttachment');
   },
 };
 
-export default createUser;
+export default createFoodAttachment;

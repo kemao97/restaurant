@@ -1,4 +1,4 @@
-import {capitalize, merge} from 'lodash';
+import {upperFirst, merge, camelCase} from 'lodash';
 import {getPayloadFromToken} from '../utils/auth';
 import path from 'path';
 import fs from 'fs';
@@ -19,9 +19,9 @@ const readSchemaOfFile = (models, dirPath) => {
     })
     .forEach((file) => {
       const objectSchema = require(path.join(dirPath, file));
-      const fileName = path.basename(file, '.js');
+      const fileName = camelCase(path.basename(file, '.js'));
       let query = objectSchema[`${fileName}Queries`];
-      const resolverFunc = objectSchema[`generate${capitalize(fileName)}Resolvers`];
+      const resolverFunc = objectSchema[`generate${upperFirst(fileName)}Resolvers`];
       if (!(query instanceof Array) && (query instanceof Object)) {
         query = [query];
       }

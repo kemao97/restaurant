@@ -9,6 +9,7 @@ import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/lib/integration/react';
 import {persist, store} from './redux/store';
 import {CookiesProvider} from 'react-cookie';
+import {createUploadLink} from 'apollo-upload-client';
 
 const App = () => {
   return (
@@ -27,8 +28,8 @@ const App = () => {
 };
 
 const cache = new InMemoryCache();
-const httpLink = new HttpLink({
-  uri: 'http://localhost:3001/graphql',
+const httpLink = createUploadLink({
+  uri: process.env.REACT_APP_API_URL,
   credentials: 'include',
 });
 const errorLink = onError(({graphQLErrors, networkError}) => {

@@ -33,7 +33,7 @@ const Profile = ({className, viewer}) => {
         className={classes.avatar}
         component={RouterLink}
         src=''
-        to="/settings"
+        to="/account"
       />
       <Typography
         className={classes.name}

@@ -106,7 +106,7 @@ export const actionRetrieveObject = async (args, context, options) => {
   const id = decodeGlobalID(null, encodeID);
   const object = await model.findByPk(id);
   if (required && !object) {
-    throw new Error(`${objectName} not found`);
+    throw new Error(`Direction retrieve: ${objectName} can't retrieve id`);
   }
   context[exportName] = object;
   return object;

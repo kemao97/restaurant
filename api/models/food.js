@@ -7,9 +7,11 @@ const generateFoodModel = (sequelize, DataTypes) => {
     },
     name: DataTypes.STRING,
     description: DataTypes.STRING,
-  });
+    price: DataTypes.INTEGER,
+  }, {tableName: 'Food'});
   Food.associate = (models) => {
-    // associations can be defined here
+    const {FoodModel, FoodAttachmentModel} = models;
+    FoodModel.hasMany(FoodAttachmentModel);
   };
   return Food;
 };

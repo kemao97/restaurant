@@ -7,12 +7,16 @@ const createFood = {
         defaultValue: Sequelize.UUIDV4,
       },
       name: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(100),
         allowNull: false,
         unique: true,
       },
+      price: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       description: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(500),
         allowNull: false,
       },
       createdAt: {
