@@ -9,6 +9,7 @@ import {
   FoodList as FoodListView,
   FoodUpdate as FoodUpdateView,
   Home as HomeView,
+  Dashboard as DashboardView,
   Login as LoginView,
   UserCreate as UserCreateView,
   UserList as UserListView,
@@ -17,8 +18,9 @@ import {
 const Routes = () => (
   <BrowserRouter>
     <Switch>
+      <Route path='/' exact component={HomeView} />
       <Route path='/login' exact component={unSecure(LoginView)} />
-      <RouteWithLayout path='/' exact component={secure(HomeView)} layout={MainLayout} />
+      <RouteWithLayout path='/dashboard' exact component={secure(DashboardView)} layout={MainLayout} />
       <RouteWithLayout path='/users' exact component={secure(UserListView)} layout={MainLayout} />
       <RouteWithLayout path='/user' exact component={secure(UserCreateView)} layout={MainLayout} />
       <RouteWithLayout path="/account" component={secure(AccountView)} exact layout={MainLayout} />

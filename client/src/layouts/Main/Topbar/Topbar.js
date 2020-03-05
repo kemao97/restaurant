@@ -6,9 +6,7 @@ import {makeStyles} from '@material-ui/styles';
 import {AppBar, Badge, Hidden, IconButton, Toolbar} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
-import InputIcon from '@material-ui/icons/Input';
-import {compose} from 'recompose';
-import TopbarCTN from './TopbarCTN';
+import {Logout} from '../../../components';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,13 +15,10 @@ const useStyles = makeStyles((theme) => ({
   flexGrow: {
     flexGrow: 1,
   },
-  signOutButton: {
-    marginLeft: theme.spacing(1),
-  },
 }));
 
 const Topbar = (props) => {
-  const {className, onSidebarOpen, onLogout, ...rest} = props;
+  const {className, onSidebarOpen, ...rest} = props;
 
   const classes = useStyles();
 
@@ -52,13 +47,7 @@ const Topbar = (props) => {
               <NotificationsIcon />
             </Badge>
           </IconButton>
-          <IconButton
-            className={classes.signOutButton}
-            color="inherit"
-            onClick={onLogout}
-          >
-            <InputIcon />
-          </IconButton>
+          <Logout />
         </Hidden>
         <Hidden lgUp>
           <IconButton
@@ -78,6 +67,4 @@ Topbar.propTypes = {
   onSidebarOpen: PropTypes.func,
 };
 
-export default compose(
-  TopbarCTN,
-)(Topbar);
+export default Topbar;

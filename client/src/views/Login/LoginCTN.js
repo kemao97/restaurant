@@ -34,12 +34,7 @@ export default compose(
   withRouter,
   withState('form', 'updateForm', formInit),
   withState('alert', 'updateAlert', alertInit),
-  graphql(LOGIN_QUERY, {
-    name: 'loginQuery',
-    options: (props) => ({
-      errorPolicy: 'none',
-    }),
-  }),
+  graphql(LOGIN_QUERY, {name: 'loginQuery'}),
   withHandlers({
     onChange: ({updateForm}) => async (e) => {
       const {value, name} = e.target;

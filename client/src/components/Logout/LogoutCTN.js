@@ -3,7 +3,7 @@ import {graphql} from '@apollo/react-hoc';
 import {compose, withHandlers} from 'recompose';
 import {withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {logout} from '../../../redux/actions/viewer';
+import {logout} from '../../redux/actions/viewer';
 
 const LOGOUT_QUERY = gql`
   mutation {
