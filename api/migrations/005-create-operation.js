@@ -1,18 +1,30 @@
-const createFoodAttachment = {
+const createOperation = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('FoodAttachment', {
+    return queryInterface.createTable('Operation', {
       id: {
-        type: Sequelize.UUID,
         primaryKey: true,
+        type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
       },
-      path: {
-        type: Sequelize.STRING(500),
-        allowNull: false,
-      },
-      foodId: {
+      roleId: {
         type: Sequelize.UUID,
         allowNull: false,
+        references: {
+          model: 'Role',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+      },
+      resourceId: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        references: {
+          model: 'Resource',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
       createdAt: {
         allowNull: false,
@@ -27,8 +39,8 @@ const createFoodAttachment = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('FoodAttachment');
+    return queryInterface.dropTable('Operation');
   },
 };
 
-export default createFoodAttachment;
+export default createOperation;

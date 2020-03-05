@@ -31,7 +31,6 @@ export const foodAttachmentQueries = [
 ];
 
 export const generateFoodAttachmentResolvers = (models) => {
-  const {FoodAttachmentModel} = models;
   return {
     Mutation: {
       createFoodAttachment: async (obj, args, context, info) => {

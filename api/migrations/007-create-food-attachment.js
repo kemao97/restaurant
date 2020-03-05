@@ -1,18 +1,24 @@
-const createUserRole = {
+const createFoodAttachment = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('UserRole', {
+    return queryInterface.createTable('FoodAttachment', {
       id: {
-        primaryKey: true,
         type: Sequelize.UUID,
+        primaryKey: true,
         defaultValue: Sequelize.UUIDV4,
       },
-      userId: {
-        type: Sequelize.UUID,
+      path: {
+        type: Sequelize.STRING(500),
         allowNull: false,
       },
-      roleId: {
+      foodId: {
         type: Sequelize.UUID,
         allowNull: false,
+        references: {
+          model: 'Food',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
       createdAt: {
         allowNull: false,
@@ -27,8 +33,8 @@ const createUserRole = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('UserRole');
+    return queryInterface.dropTable('FoodAttachment');
   },
 };
 
-export default createUserRole;
+export default createFoodAttachment;

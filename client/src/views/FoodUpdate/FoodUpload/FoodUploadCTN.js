@@ -1,5 +1,5 @@
 import {gql} from 'apollo-boost';
-import {branch, compose, lifecycle, withHandlers, withProps} from 'recompose';
+import {branch, compose, withHandlers, withProps} from 'recompose';
 import {graphql} from '@apollo/react-hoc';
 import {withRouter} from 'react-router-dom';
 

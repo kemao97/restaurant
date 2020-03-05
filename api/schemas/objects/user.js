@@ -3,6 +3,7 @@ import {encodeGlobalID} from '../../utils';
 import {hashPassword} from '../../utils/auth';
 import {object, string} from 'yup';
 import {get} from 'lodash';
+import {ApolloError} from 'apollo-server-express';
 
 export const typename = 'User';
 
@@ -141,7 +142,7 @@ export const generateUserResolvers = (models) => {
         const {UserModel} = context.models;
         const user = await UserModel.findByPk(viewer.id);
         if (!user) {
-          throw new Error('please login before perform this action');
+          throw new ApolloError('please login before perform this action', 'RES_MESSAGE');
         }
         return user.update(input);
       },

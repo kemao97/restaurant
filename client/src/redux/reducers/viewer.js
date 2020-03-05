@@ -1,4 +1,4 @@
-import {LOGIN, LOGOUT,} from '../actions/viewer';
+import {LOGIN, LOGOUT} from '../actions/viewer';
 
 const viewerDefaultState = {
   id: undefined,

@@ -1,9 +1,10 @@
 import {gql, SchemaDirectiveVisitor} from 'apollo-server-express';
 import {defaultFieldResolver} from 'graphql';
-import {camelCase, get} from 'lodash';
+import {camelCase, get, merge, groupBy, mapValues} from 'lodash';
 import {decodeGlobalID} from '../../utils';
 import fs from 'fs';
 import path from 'path';
+import {ValidationError} from 'yup';
 
 const readYupOfFile = (dirPath) => {
   const yupObject = {};
@@ -61,7 +62,8 @@ export class ValidateDirective extends SchemaDirectiveVisitor {
   visitFieldDefinition(field, details) {
     const {resolve = defaultFieldResolver} = field;
     const {yupName, inputPath} = this.args;
-    const VALIDATE_MAP = readYupOfFile(path.join(__dirname, '../objects'));
+    let VALIDATE_MAP = readYupOfFile(path.join(__dirname, '../objects'));
+    VALIDATE_MAP = merge(VALIDATE_MAP, readYupOfFile(path.join(__dirname, '../general')));
     if (!yupName) {
       throw new Error('yupName is undefined');
     }
@@ -71,9 +73,18 @@ export class ValidateDirective extends SchemaDirectiveVisitor {
         throw new Error('inputPath for validate not valid');
       }
       const {validateFieldConfig, validateObjectFunc} = await VALIDATE_MAP[yupName](args, context, this.args);
-      await validateFieldConfig.validate(input)
+      await validateFieldConfig.validate(input, {abortEarly: false})
         .catch((e) => {
-          throw new Error(e.message);
+          const groupField =
+            groupBy(e.inner.map((field) => ({
+              path: field.path,
+              message: field.errors[0],
+            })), 'path');
+          const groupFieldVariant =
+            mapValues(groupField, (arrayMessage) => arrayMessage.map((messageObj) =>
+              messageObj.message,
+            ));
+          throw new ValidationError(groupFieldVariant);
         });
       validateObjectFunc && await validateObjectFunc();
       return resolve.call(this, obj, args, context, info);

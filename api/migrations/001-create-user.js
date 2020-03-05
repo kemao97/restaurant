@@ -1,6 +1,6 @@
 const createUser = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Users', {
+    return queryInterface.createTable('User', {
       id: {
         primaryKey: true,
         type: Sequelize.UUID,
@@ -36,7 +36,7 @@ const createUser = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Users');
+    return queryInterface.dropTable('User');
   },
 };
 

@@ -18,6 +18,7 @@ const Login = ({
   onChange,
   onSubmit,
   alert,
+  form,
 }) => {
   const classes = useStyles();
 
@@ -25,10 +26,10 @@ const Login = ({
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
+        <Avatar sizes='large' className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
-        <Typography component="h1" variant="h5">
+        <Typography variant="h1">
           Sign in
         </Typography>
         <form
@@ -49,6 +50,9 @@ const Login = ({
             name="email"
             autoComplete="email"
             autoFocus
+            value={form.email.value}
+            error={!!form.email.error}
+            helperText={form.email.error}
             onChange={onChange}
           />
           <TextField
@@ -61,6 +65,9 @@ const Login = ({
             type="password"
             id="password"
             autoComplete="current-password"
+            value={form.password.value}
+            error={!!form.password.error}
+            helperText={form.password.error}
             onChange={onChange}
           />
           <FormControlLabel
@@ -86,6 +93,7 @@ Login.propTypes = {
   onChange: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   alert: PropTypes.object.isRequired,
+  form: PropTypes.object,
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -97,6 +105,8 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     margin: theme.spacing(1),
+    width: theme.spacing(7),
+    height: theme.spacing(7),
     backgroundColor: theme.palette.secondary.main,
   },
   form: {

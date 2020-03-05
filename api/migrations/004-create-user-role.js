@@ -1,18 +1,30 @@
-const createOperation = {
+const createUserRole = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Operation', {
+    return queryInterface.createTable('UserRole', {
       id: {
         primaryKey: true,
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
       },
+      userId: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        references: {
+          model: 'User',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+      },
       roleId: {
         type: Sequelize.UUID,
         allowNull: false,
-      },
-      resourceId: {
-        type: Sequelize.UUID,
-        allowNull: false,
+        references: {
+          model: 'Role',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
       createdAt: {
         allowNull: false,
@@ -27,8 +39,8 @@ const createOperation = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Operation');
+    return queryInterface.dropTable('UserRole');
   },
 };
 
-export default createOperation;
+export default createUserRole;

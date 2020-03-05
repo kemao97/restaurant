@@ -9,6 +9,8 @@ import {
   UpdateObject,
   ValidateDirective,
 } from './general/directive';
+import {ApolloError} from 'apollo-server-express';
+import {ValidationError} from 'yup';
 
 const readSchemaOfFile = (models, dirPath) => {
   let typeDefs = [];
@@ -72,6 +74,32 @@ const createSchema = (models) => {
     return {viewer, models, res};
   };
 
+  const formatError = (error) => {
+    console.log('**************************************************');
+    console.log('*                  Graphql Error                 *');
+    console.log('**************************************************');
+    console.log(error);
+    if (error.originalError instanceof ValidationError) {
+      return {
+        type: 'VALIDATE_ERROR',
+        fields: error.message,
+      };
+    }
+
+    if (error.originalError instanceof ApolloError &&
+      error.extensions.code === 'RES_MESSAGE') {
+      return {
+        type: 'RES_MESSAGE',
+        message: error.message,
+      };
+    }
+
+    return {
+      type: 'INTERNAL_SERVER_ERROR',
+      message: 'Internal Server Error',
+    };
+  };
+
   return {
     typeDefs,
     resolvers,
@@ -83,6 +111,7 @@ const createSchema = (models) => {
       update: UpdateObject,
       delete: DeleteObject,
     },
+    formatError,
   };
 };
 

@@ -15,7 +15,7 @@ const generateUserModel = (sequelize, DataTypes) => {
       defaultValue: '',
     },
     phone: DataTypes.STRING,
-  }, {tableName: 'Users'});
+  }, {tableName: 'User'});
   User.associate = (models) => {
     // associations can be defined here
   };

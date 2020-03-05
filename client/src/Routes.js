@@ -4,14 +4,14 @@ import React from 'react';
 import {secure, unSecure} from './components/Auth';
 import {Main as MainLayout} from './layouts';
 import {
-  Home as HomeView,
-  Login as LoginView,
-  UserCreate as UserCreateView,
-  UserList as UserListView,
   Account as AccountView,
   FoodCreate as FoodCreateView,
   FoodList as FoodListView,
   FoodUpdate as FoodUpdateView,
+  Home as HomeView,
+  Login as LoginView,
+  UserCreate as UserCreateView,
+  UserList as UserListView,
 } from './views';
 
 const Routes = () => (

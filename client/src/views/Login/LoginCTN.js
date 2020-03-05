@@ -3,7 +3,7 @@ import {gql} from 'apollo-boost';
 import {graphql} from '@apollo/react-hoc';
 import {withRouter} from 'react-router-dom';
 import {login} from '../../redux/actions/viewer';
-import {get} from 'lodash';
+import {get, merge} from 'lodash';
 
 const LOGIN_QUERY = gql`
   mutation login($input: LoginInput!) {
@@ -15,8 +15,14 @@ const LOGIN_QUERY = gql`
 `;
 
 const formInit = {
-  email: '',
-  password: '',
+  email: {
+    error: null,
+    value: '',
+  },
+  password: {
+    error: null,
+    value: '',
+  },
 };
 
 const alertInit = {
@@ -28,33 +34,66 @@ export default compose(
   withRouter,
   withState('form', 'updateForm', formInit),
   withState('alert', 'updateAlert', alertInit),
-  graphql(LOGIN_QUERY, {name: 'loginQuery'}),
+  graphql(LOGIN_QUERY, {
+    name: 'loginQuery',
+    options: (props) => ({
+      errorPolicy: 'none',
+    }),
+  }),
   withHandlers({
-    onChange: ({form, updateForm}) => async (e) => {
+    onChange: ({updateForm}) => async (e) => {
       const {value, name} = e.target;
-      updateForm({
-        ...form,
-        [name]: value,
-      });
+      updateForm((prev) => merge(
+        prev,
+        {[name]: {value, error: null}},
+      ));
     },
-    onSubmit: ({loginQuery, form, history, dispatch, updateAlert}) => async (e) => {
+    onSubmit: ({loginQuery, form, history, dispatch, updateAlert, updateForm}) => async (e) => {
       e.preventDefault();
-      try {
-        await updateAlert(alertInit);
-        const data = await loginQuery({
-          variables: {
-            input: form,
+      await updateAlert(alertInit);
+      const data = await loginQuery({
+        variables: {
+          input: {
+            email: form.email.value,
+            password: form.password.value,
           },
-        });
-        const user = get(data, 'data.login');
+        },
+      });
+      const user = get(data, 'data.login');
+      if (user) {
         await dispatch(login(user));
         history.push('/users');
-      } catch (e) {
+        return;
+      }
+      const typeError = get(data, 'errors[0].type');
+      if (typeError === 'VALIDATE_ERROR') {
+        const fields = get(data, 'errors[0].fields');
+        const updateErrorForm = {
+          email: {
+            error: get(fields, 'email[0]'),
+          },
+          password: {
+            error: get(fields, 'password[0]'),
+          },
+        };
+        updateForm((prev) => merge(
+          prev,
+          updateErrorForm,
+        ));
+        return;
+      }
+      if (typeError === 'RES_MESSAGE') {
+        const message = get(data, 'errors[0].message');
         updateAlert({
           color: 'error',
-          message: 'Email or password not valid',
+          message,
         });
+        return;
       }
+      updateAlert({
+        color: 'red',
+        message: 'Something was occur',
+      });
     },
   }),
 );
