@@ -1,30 +1,21 @@
 import React from 'react';
-import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
-import CameraIcon from '@material-ui/icons/PhotoCamera';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
-import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import Link from '@material-ui/core/Link';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import {Avatar, IconButton} from '@material-ui/core';
 import {compose} from 'recompose';
 import HomeCTN from './HomeCTN';
 import PropTypes from 'prop-types';
-import {head, get} from 'lodash';
+import {get, head} from 'lodash';
 import Divider from '@material-ui/core/Divider';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import {Badge} from '@material-ui/core';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import {Logout} from "../../components";
+import {HomeNav} from '../../layouts';
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -57,9 +48,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.primary.main,
     padding: theme.spacing(6),
   },
-  logo: {
-    flex: 1,
-  },
   overlay: {
     backgroundColor: 'black',
     opacity: 0.3,
@@ -77,77 +65,17 @@ const useStyles = makeStyles((theme) => ({
   dFlex: {
     display: 'flex',
   },
-  nav: {
-    position: 'fixed',
-  },
-  navTransparent: {
-    background: 'transparent',
-  },
-  navSecondary: {
-    background: 'secondary',
-  },
-  textWhite: {
-    color: 'white',
-  },
-  signIn: {
-    marginLeft: 20,
-  },
-  logout: {
-    color: 'white',
-  },
 }));
 
 const Home = ({
   foods,
-  transparent,
-  isLogged,
 }) => {
   const classes = useStyles();
 
   return (
     <React.Fragment >
       <CssBaseline />
-      <AppBar className={`${classes.nav} ${
-        transparent ? classes.navTransparent : classes.navSecondary
-      }`} position="relative">
-        <Container disableGutters maxWidth='xl'>
-          <Toolbar>
-            <Link className={classes.logo} href="/">
-              <img
-                alt="Logo"
-                src="/images/logos/logo--white.svg"
-              />
-            </Link>
-            <IconButton>
-              <Badge
-                badgeContent={null}
-                color="secondary"
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left',
-                }}
-              >
-                <ShoppingCartIcon className={classes.textWhite} />
-              </Badge>
-            </IconButton>
-            {isLogged ?
-              (<Button href='/account'>
-                <Avatar alt='' src='' />
-              </Button>) :
-              <Button
-                className={classes.signIn}
-                href='/login'
-                variant='contained'
-                color='secondary'
-                startIcon={<AccountCircleIcon fontSize='large' />}
-              >
-                Sign In
-              </Button>
-            }
-            {isLogged && <Logout />}
-          </Toolbar>
-        </Container>
-      </AppBar>
+      <HomeNav transparent />
       <main>
         {/* Hero unit */}
         <div className={classes.heroContent}>
@@ -213,14 +141,10 @@ const Home = ({
 
 Home.propTypes = {
   foods: PropTypes.arrayOf(PropTypes.object),
-  transparent: PropTypes.bool,
-  isLogged: PropTypes.bool,
 };
 
 Home.defaultProps = {
   foods: [],
-  transparent: false,
-  isLogged: false,
 };
 
 export default compose(

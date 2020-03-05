@@ -5,11 +5,11 @@ import {secure, unSecure} from './components/Auth';
 import {Main as MainLayout} from './layouts';
 import {
   Account as AccountView,
+  Dashboard as DashboardView,
   FoodCreate as FoodCreateView,
   FoodList as FoodListView,
   FoodUpdate as FoodUpdateView,
   Home as HomeView,
-  Dashboard as DashboardView,
   Login as LoginView,
   UserCreate as UserCreateView,
   UserList as UserListView,
