@@ -1,4 +1,4 @@
-import {compose, withHandlers, withState} from 'recompose';
+import {compose, lifecycle, withHandlers, withState} from 'recompose';
 import {gql} from 'apollo-boost';
 import {graphql} from '@apollo/react-hoc';
 import {withRouter} from 'react-router-dom';
@@ -89,6 +89,14 @@ export default compose(
         color: 'red',
         message: 'Something was occur',
       });
+    },
+  }),
+  lifecycle({
+    componentDidMount() {
+      console.log(this.props.form);
+    },
+    componentWillUnmount() {
+      console.log('unmount');
     },
   }),
 );

@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   signIn: {
     marginLeft: 20,
   },
-  logo: {
+  split: {
     flex: 1,
   },
 }));
@@ -46,13 +46,14 @@ const HomeNav = ({transparent, isLogged}) => {
     }`} position="relative">
       <Container disableGutters maxWidth='xl'>
         <Toolbar>
-          <Link className={classes.logo} href="/">
+          <Link href="/">
             <img
               alt="Logo"
               src="/images/logos/logo--white.svg"
             />
           </Link>
-          <IconButton>
+          <div className={classes.split} />
+          <IconButton href='/cart'>
             <Badge
               badgeContent={null}
               color="secondary"

@@ -5,6 +5,7 @@ import {secure, unSecure} from './components/Auth';
 import {Main as MainLayout} from './layouts';
 import {
   Account as AccountView,
+  Cart as CartView,
   Dashboard as DashboardView,
   FoodCreate as FoodCreateView,
   FoodList as FoodListView,
@@ -19,6 +20,7 @@ const Routes = () => (
   <BrowserRouter>
     <Switch>
       <Route path='/' exact component={HomeView} />
+      <Route path='/cart' exact component={CartView} />
       <Route path='/login' exact component={unSecure(LoginView)} />
       <RouteWithLayout path='/dashboard' exact component={secure(DashboardView)} layout={MainLayout} />
       <RouteWithLayout path='/users' exact component={secure(UserListView)} layout={MainLayout} />

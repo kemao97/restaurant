@@ -31,7 +31,7 @@ export const directiveQueries = gql`
   
   directive @retrieve(
     objectName: String
-    idName: String
+    idPath: String
     exportName: String
     modelName: String
     required: Boolean
@@ -46,14 +46,14 @@ export const directiveQueries = gql`
   
   directive @update(
     objectName: String
-    idName: String = "id"
+    idPath: String = "id"
     modelName: String
     inputPath: String = "input"
   ) on FIELD_DEFINITION
   
   directive @delete(
     objectName: String
-    idName: String = "id"
+    idPath: String = "id"
     modelName: String
   ) on FIELD_DEFINITION
 `;
@@ -107,13 +107,13 @@ export class RetrieveObject extends SchemaDirectiveVisitor {
 export const actionRetrieveObject = async (args, context, options) => {
   const {
     objectName,
-    idName = 'id',
+    idPath = 'id',
     exportName = `${camelCase(objectName)}Retrieve`,
     modelName = `${objectName}Model`,
     required = true,
   } = options;
   const model = context.models[modelName];
-  const encodeID = args[idName];
+  const encodeID = get(args, idPath);
   const id = decodeGlobalID(null, encodeID);
   const object = await model.findByPk(id);
   if (required && !object) {

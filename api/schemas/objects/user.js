@@ -1,9 +1,8 @@
-import {gql} from 'apollo-server-express';
+import {ApolloError, gql} from 'apollo-server-express';
 import {encodeGlobalID} from '../../utils';
 import {hashPassword} from '../../utils/auth';
 import {object, string} from 'yup';
-import {get} from 'lodash';
-import {ApolloError} from 'apollo-server-express';
+import {get, head} from 'lodash';
 
 export const typename = 'User';
 
@@ -58,6 +57,7 @@ const userCRUD = gql`
     phone: String
     createdAt: DateTime
     updatedAt: DateTime
+    cartWorking: Cart
   }
   
   extend type Query {
@@ -149,6 +149,13 @@ export const generateUserResolvers = (models) => {
     },
     User: {
       id: (obj, args, context, info) => encodeGlobalID(typename, obj.id),
+      cartWorking: async (user, args, context, info) => {
+        return head(await user.getCarts({
+          where: {
+            soldAt: null,
+          },
+        }));
+      },
     },
   };
 };

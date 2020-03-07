@@ -17,7 +17,8 @@ const generateUserModel = (sequelize, DataTypes) => {
     phone: DataTypes.STRING,
   }, {tableName: 'User'});
   User.associate = (models) => {
-    // associations can be defined here
+    const {UserModel, CartModel} = models;
+    UserModel.hasMany(CartModel);
   };
   return User;
 };

@@ -20,7 +20,7 @@ const foodAttachmentCRUD = gql`
   
   extend type Mutation {
     createFoodAttachment(foodId: ID!, file: Upload!): Boolean
-      @retrieve(objectName: "Food", idName: "foodId")
+      @retrieve(objectName: "Food", idPath: "foodId")
     deleteFoodAttachment(id: ID!): Boolean
       @delete(objectName: "FoodAttachment")
   }

@@ -10,8 +10,10 @@ const generateFoodModel = (sequelize, DataTypes) => {
     price: DataTypes.INTEGER,
   }, {tableName: 'Food'});
   Food.associate = (models) => {
-    const {FoodModel, FoodAttachmentModel} = models;
+    const {FoodModel, FoodAttachmentModel, CartDetailModel, CartModel} = models;
     FoodModel.hasMany(FoodAttachmentModel);
+    FoodModel.hasMany(CartDetailModel);
+    FoodModel.belongsToMany(CartModel, {through: CartDetailModel});
   };
   return Food;
 };
