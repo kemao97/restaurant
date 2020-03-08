@@ -5,19 +5,22 @@ import {makeStyles} from '@material-ui/styles';
 import {Button, Card, CardActions, CardContent, CardHeader, Divider, Grid, TextField} from '@material-ui/core';
 import {compose} from 'recompose';
 import AccountDetailsCTN from './AccountDetailsCTN';
+import {get} from 'lodash';
 
 const useStyles = makeStyles(() => ({
   root: {},
 }));
 
-const AccountDetails = (props) => {
-  const {className, profile, handleChange, handleSubmit, ...rest} = props;
-
+const AccountDetails = ({
+  className,
+  profile,
+  handleChange,
+  handleSubmit,
+}) => {
   const classes = useStyles();
 
   return (
     <Card
-      {...rest}
       className={clsx(classes.root, className)}
     >
       <form
@@ -65,6 +68,8 @@ const AccountDetails = (props) => {
                 onChange={handleChange}
                 type="number"
                 value={profile.phone}
+                error={!!get(profile, 'errors.phone')}
+                helperText={get(profile, 'errors.phone')}
                 variant="outlined"
                 InputLabelProps={{shrink: true}}
               />

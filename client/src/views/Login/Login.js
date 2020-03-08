@@ -13,11 +13,11 @@ import {compose} from 'recompose';
 import loginCTN from './LoginCTN';
 import PropTypes from 'prop-types';
 import {Alert} from '@material-ui/lab';
+import {get} from 'lodash';
 
 const Login = ({
   onChange,
   onSubmit,
-  alert,
   form,
 }) => {
   const classes = useStyles();
@@ -37,8 +37,10 @@ const Login = ({
           noValidate
           onSubmit={onSubmit}
         >
-          {alert.message && (
-            <Alert variant='filled' severity={alert.color}>{alert.message}</Alert>
+          {get(form, 'errors.general') && (
+            <Alert variant='filled' severity='error'>
+              {get(form, 'errors.general')}
+            </Alert>
           )}
           <TextField
             variant="outlined"
@@ -50,9 +52,9 @@ const Login = ({
             name="email"
             autoComplete="email"
             autoFocus
-            value={form.email.value}
-            error={!!form.email.error}
-            helperText={form.email.error}
+            value={form.email}
+            error={!!get(form, 'errors.email')}
+            helperText={get(form, 'errors.email')}
             onChange={onChange}
           />
           <TextField
@@ -65,9 +67,9 @@ const Login = ({
             type="password"
             id="password"
             autoComplete="current-password"
-            value={form.password.value}
-            error={!!form.password.error}
-            helperText={form.password.error}
+            value={form.password}
+            error={!!get(form, 'errors.password')}
+            helperText={get(form, 'errors.password')}
             onChange={onChange}
           />
           <FormControlLabel
@@ -92,7 +94,6 @@ const Login = ({
 Login.propTypes = {
   onChange: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  alert: PropTypes.object.isRequired,
   form: PropTypes.object,
 };
 

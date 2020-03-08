@@ -10,6 +10,7 @@ import {PersistGate} from 'redux-persist/lib/integration/react';
 import {persist, store} from './redux/store';
 import {CookiesProvider} from 'react-cookie';
 import {createUploadLink} from 'apollo-upload-client';
+import {get, mapValues} from 'lodash';
 
 const App = () => {
   return (
@@ -39,7 +40,12 @@ const errorLink = onError(({
   graphQLErrors,
   networkError,
 }) => {
-  if (networkError) console.log(`[Network error]: ${networkError}`);
+  if (graphQLErrors) {
+    response.handleFormErrors = handleFormErrors(get(response, 'errors[0]'));
+  }
+  if (networkError) {
+    console.log(`[Network error]: ${networkError}`);
+  }
 });
 const requestLink = new ApolloLink(
   (operation, forward) =>
@@ -74,5 +80,40 @@ const client = new ApolloClient({
     },
   },
 });
+
+const handleFormErrors = (errors) => async ({updateForm}) => {
+  const typeError = get(errors, 'type');
+  if (!typeError) return;
+  if (typeError === 'VALIDATE_ERROR') {
+    const fields = get(errors, 'fields');
+    const fieldHeads = mapValues(fields, '[0]');
+    updateForm((prev) => ({
+      ...prev,
+      errors: {
+        ...prev.errors,
+        ...fieldHeads,
+      },
+    }));
+    return;
+  }
+  if (typeError === 'RES_MESSAGE') {
+    const message = get(errors, 'message');
+    updateForm((prev) => ({
+      ...prev,
+      errors: {
+        ...prev.errors,
+        general: message,
+      },
+    }));
+    return;
+  }
+  updateForm((prev) => ({
+    ...prev,
+    errors: {
+      ...prev.errors,
+      general: 'Some error was occurred',
+    },
+  }));
+};
 
 export default App;

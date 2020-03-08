@@ -70,6 +70,7 @@ const userCRUD = gql`
     createUser(input: CreateUserInput!): User
       @validate(yupName: "yupCreateUser")
     updateProfile(input: UpdateUserInput!): User
+      @validate(yupName: "yupUpdateUser")
     deleteUser(id: ID!): Boolean
       @delete(objectName: "User")
   }
@@ -91,6 +92,22 @@ export const yupCreateUser = async (args, context, options) => {
       .required()
       .min(8)
       .max(50),
+  });
+  return {
+    validateFieldConfig,
+  };
+};
+
+export const yupUpdateUser = async (args, context, options) => {
+  const validateFieldConfig = object({
+    phone: string()
+      .max(20)
+      .matches(/((09|03|07|08|05)+([0-9]{8})\b)/g, {
+        message: 'You must enter valid phone',
+        excludeEmptyString: true,
+      }),
+    address: string()
+      .max(200),
   });
   return {
     validateFieldConfig,

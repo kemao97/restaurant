@@ -24,14 +24,20 @@ const UPDATE_PROFILE = gql`
   }
 `;
 
+const profileInit = {
+  email: '',
+  address: '',
+  phone: '',
+};
+
 export default compose(
+  withState('profile', 'updateProfile', profileInit),
   graphql(UPDATE_PROFILE, {name: 'updateUserQuery'}),
   graphql(VIEWER_QUERY, {name: 'viewerQuery'}),
   branch(
     ({viewerQuery}) => viewerQuery.viewer,
     withProps(({viewerQuery}) => ({viewer: viewerQuery.viewer})),
   ),
-  withState('profile', 'updateProfile', {}),
   withHandlers({
     handleChange: ({updateProfile}) => async (e) => {
       const {name, value} = e.target;
@@ -40,9 +46,13 @@ export default compose(
         [name]: value,
       }));
     },
-    handleSubmit: ({profile, updateUserQuery}) => async (e) => {
+    handleSubmit: ({profile, updateProfile, updateUserQuery}) => async (e) => {
       e.preventDefault();
-      await updateUserQuery({
+      updateProfile((prev) => ({
+        ...prev,
+        errors: undefined,
+      }));
+      const profileUpdate = await updateUserQuery({
         variables: {
           input: {
             address: profile.address,
@@ -50,6 +60,9 @@ export default compose(
           },
         },
       });
+      if (profileUpdate.errors) {
+        await profileUpdate.handleFormErrors({updateForm: updateProfile});
+      }
     },
   }),
   lifecycle({
