@@ -69,6 +69,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Home = ({
   foods,
+  handleAddToCart,
 }) => {
   const classes = useStyles();
 
@@ -118,6 +119,7 @@ const Home = ({
                       size="small"
                       color="primary"
                       startIcon={<AddShoppingCartIcon />}
+                      onClick={handleAddToCart(food.id)}
                     >
                       Add To Cart
                     </Button>
@@ -141,6 +143,7 @@ const Home = ({
 
 Home.propTypes = {
   foods: PropTypes.arrayOf(PropTypes.object),
+  handleAddToCart: PropTypes.func,
 };
 
 Home.defaultProps = {

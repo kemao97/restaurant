@@ -167,11 +167,13 @@ export const generateUserResolvers = (models) => {
     User: {
       id: (obj, args, context, info) => encodeGlobalID(typename, obj.id),
       cartWorking: async (user, args, context, info) => {
-        return head(await user.getCarts({
+        const cart = head(await user.getCarts({
           where: {
             soldAt: null,
           },
         }));
+        if (cart) return cart;
+        return context.viewer.createCart();
       },
     },
   };

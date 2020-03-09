@@ -13,23 +13,17 @@ import {get, head} from 'lodash';
 import CardContent from '@material-ui/core/CardContent';
 import Divider from '@material-ui/core/Divider';
 import Card from '@material-ui/core/Card';
+import CartCTN from './CartCTN';
 import Count from '../../components/Count/Count';
-
-const food = {
-  id: 1,
-  name: 'Xoài',
-  price: 123,
-  description: 'Hoa quả tráng miệng sau mỗi bữa ăn. Thực phẩm được nhập khẩu từ trang trại khép kín theo tiêu chuẩn TCN',
-  foodAttachments: [
-    {
-      id: 2,
-      path: '/uploads/057462cf-9052-421e-84fd-03ac5902e4b7.jpeg',
-    },
-  ],
-};
+import DeleteIcon from '@material-ui/icons/Delete';
+import IconButton from '@material-ui/core/IconButton';
 
 const Cart = ({
   classes,
+  cart,
+  handleCountChange,
+  handleDeleteCart,
+  handleCheckout,
 }) => {
   return (
     <div>
@@ -37,72 +31,70 @@ const Cart = ({
       <HomeNav />
       <main className={classes.main}>
         <Container className={classes.container} maxWidth='md'>
-          {false && (
-            <Paper className={classes.empty} hidden>
+          {(!cart.cartDetails) ?
+            (<Paper className={classes.empty} hidden>
               <Typography variant='h4' component='div'>
                 Cart is empty, please go back and find product
               </Typography>
-            </Paper>
-          )}
-          <div>
-            <Card className={classes.card}>
-              <CardMedia
-                className={classes.cardMedia}
-                image={
-                  get(food.foodAttachments, '[0].path') ?
-                    `${process.env.REACT_APP_ATTACH_PREFIX}${get(head(food.foodAttachments), 'path')}` :
-                    './food-default.jpg'
-                }
-                title="Image title"
-              />
-              <CardContent className={classes.cardContent}>
-                <div className={classes.dFlex}>
-                  <Typography className={classes.foodName} gutterBottom variant="h5" component="h2">
-                    {food.name}
-                  </Typography>
-                  <Typography className={classes.foodPrice} gutterBottom variant="h5" component="h2">
-                    ${food.price}
-                  </Typography>
-                </div>
-                <Divider variant='fullWidth' />
-                <Typography>
-                  {food.description}
-                </Typography>
-              </CardContent>
-            </Card>
-            <Card className={classes.card}>
-              <CardMedia
-                className={classes.cardMedia}
-                image={
-                  get(food.foodAttachments, '[0].path') ?
-                    `${process.env.REACT_APP_ATTACH_PREFIX}${get(head(food.foodAttachments), 'path')}` :
-                    './food-default.jpg'
-                }
-                title="Image title"
-              />
-              <CardContent className={classes.cardContent}>
-                <div className={classes.dFlex}>
-                  <Typography className={classes.foodName} gutterBottom variant="h5" component="h2">
-                    {food.name}
-                  </Typography>
-                  <Typography className={classes.foodPrice} gutterBottom variant="h5" component="h2">
-                    ${food.price}
-                  </Typography>
-                </div>
-                <Divider variant='fullWidth' />
-                <Typography>
-                  {food.description}
-                </Typography>
-                <Divider className={classes.divider} variant='fullWidth' />
-                <Count />
-              </CardContent>
-            </Card>
-          </div>
+            </Paper>) :
+            <div>
+              {(() => (
+                cart.cartDetails.map((cartDetail) => {
+                  const {quantity, food} = cartDetail;
+                  return (
+                    <Card className={classes.card} key={food.id}>
+                      <CardMedia
+                        className={classes.cardMedia}
+                        image={
+                          get(food.foodAttachments, '[0].path') ?
+                            `${process.env.REACT_APP_ATTACH_PREFIX}${get(head(food.foodAttachments), 'path')}` :
+                            './food-default.jpg'
+                        }
+                        title="Image title"
+                      />
+                      <CardContent className={classes.cardContent}>
+                        <div className={classes.dFlex}>
+                          <Typography className={classes.foodName} gutterBottom variant="h5" component="h2">
+                            {food.name}
+                          </Typography>
+                          <Typography className={classes.foodPrice} gutterBottom variant="h5" component="h2">
+                            ${food.price}
+                          </Typography>
+                        </div>
+                        <Divider variant='fullWidth' />
+                        <Typography>
+                          {food.description}
+                        </Typography>
+                        <Divider className={classes.divider} variant='fullWidth' />
+                        <div className={classes.dFlex}>
+                          <div className={classes.flex1}>
+                            <Count
+                              count={quantity}
+                              cbChange={handleCountChange(food)}
+                            />
+                          </div>
+                          <IconButton onClick={handleDeleteCart(cartDetail.id)}>
+                            <DeleteIcon />
+                          </IconButton>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })
+              ))()}
+            </div>
+          }
           <div className={classes.calc}>
             <Paper className={classes.totalMoney}>
-              <Typography variant='h3'>Total: $200</Typography>
+              <Typography variant='h3'>Total: ${cart.totalMoney}</Typography>
             </Paper>
-            <Button variant='contained' color='primary' className={classes.order} fullWidth>
+            <Button
+              variant='contained'
+              color='primary'
+              className={classes.order}
+              fullWidth
+              onClick={handleCheckout}
+            >
               Order
             </Button>
           </div>
@@ -161,15 +153,24 @@ const style = () => ({
   divider: {
     marginBottom: 10,
   },
+  flex1: {
+    flex: 1,
+  },
 });
 
 Cart.propTypes = {
   classes: PropTypes.func,
+  cart: PropTypes.object,
+  handleCountChange: PropTypes.func,
+  handleDeleteCart: PropTypes.func,
+  handleCheckout: PropTypes.func,
 };
 
 Cart.defaultProps = {
+  cart: {},
 };
 
 export default compose(
   withStyles(style),
+  CartCTN,
 )(Cart);

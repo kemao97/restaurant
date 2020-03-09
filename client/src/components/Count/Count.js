@@ -7,9 +7,9 @@ import {withStyles} from '@material-ui/styles';
 import PropTypes from 'prop-types';
 import CountCTN from './CountCTN';
 
-const Count = ({classes, count, increase, minus, onChange}) => {
+const Count = ({classes, className, count, increase, minus, onChange}) => {
   return (
-    <ButtonGroup size='small' variant="outlined" color="primary">
+    <ButtonGroup className={className} size='small' variant="outlined" color="primary">
       <Button onClick={minus}>-</Button>
       <TextField
         className={classes.quantity}
@@ -34,6 +34,7 @@ Count.propTypes = {
   increase: PropTypes.func,
   minus: PropTypes.func,
   onChange: PropTypes.func,
+  className: PropTypes.string,
 };
 
 Count.defaultProps = {
