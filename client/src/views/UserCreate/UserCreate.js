@@ -11,11 +11,12 @@ import {compose} from 'recompose';
 import PropTypes from 'prop-types';
 import {Alert} from '@material-ui/lab';
 import UserCreateCTN from './UserCreateCTN';
+import {get} from 'lodash';
 
 const UserCreate = ({
   onChange,
   onSubmit,
-  alert,
+  form,
 }) => {
   const classes = useStyles();
 
@@ -34,8 +35,10 @@ const UserCreate = ({
           noValidate
           onSubmit={onSubmit}
         >
-          {alert.message && (
-            <Alert variant='filled' severity={alert.color}>{alert.message}</Alert>
+          {get(form, 'errors.general') && (
+            <Alert variant='filled' severity='error'>
+              {get(form, 'errors.general')}
+            </Alert>
           )}
           <TextField
             variant="outlined"
@@ -46,6 +49,8 @@ const UserCreate = ({
             label="Email Address"
             name="email"
             autoComplete="email"
+            error={!!get(form, 'errors.email')}
+            helperText={get(form, 'errors.email')}
             autoFocus
             onChange={onChange}
           />
@@ -58,6 +63,8 @@ const UserCreate = ({
             label="Password"
             type="password"
             id="password"
+            error={!!get(form, 'errors.password')}
+            helperText={get(form, 'errors.password')}
             autoComplete="current-password"
             onChange={onChange}
           />
@@ -79,7 +86,7 @@ const UserCreate = ({
 UserCreate.propTypes = {
   onChange: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  alert: PropTypes.object.isRequired,
+  form: PropTypes.object.isRequired,
 };
 
 const useStyles = makeStyles((theme) => ({

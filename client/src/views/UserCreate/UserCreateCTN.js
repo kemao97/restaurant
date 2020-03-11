@@ -2,6 +2,7 @@ import {compose, withHandlers, withState} from 'recompose';
 import {gql} from 'apollo-boost';
 import {graphql} from '@apollo/react-hoc';
 import {withRouter} from 'react-router-dom';
+import {get, pick} from 'lodash';
 
 const CREATE_USER_QUERY = gql`
   mutation createUser($input: CreateUserInput!) {
@@ -17,15 +18,9 @@ const formInit = {
   password: '',
 };
 
-const alertInit = {
-  color: undefined,
-  message: undefined,
-};
-
 export default compose(
   withRouter,
   withState('form', 'updateForm', formInit),
-  withState('alert', 'updateAlert', alertInit),
   graphql(CREATE_USER_QUERY, {name: 'createUserQuery'}),
   withHandlers({
     onChange: ({form, updateForm}) => async (e) => {
@@ -35,21 +30,28 @@ export default compose(
         [name]: value,
       });
     },
-    onSubmit: ({createUserQuery, form, history, dispatch, updateAlert}) => async (e) => {
+    onSubmit: ({createUserQuery, form, history, updateForm}) => async (e) => {
       e.preventDefault();
       try {
-        await updateAlert(alertInit);
-        await createUserQuery({
+        await updateForm((prev) => ({
+          ...prev,
+          errors: undefined,
+        }));
+        const data = await createUserQuery({
           variables: {
-            input: form,
+            input: pick(form, [
+              'email',
+              'password',
+            ]),
           },
         });
-        history.push('/users');
+        if (get(data, 'data.createUser')) {
+          history.push('/users');
+        } else {
+          await data.handleFormErrors({updateForm});
+        }
       } catch (e) {
-        updateAlert({
-          color: 'error',
-          message: 'Có lỗi xảy ra',
-        });
+        console.log(e);
       }
     },
   }),

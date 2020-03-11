@@ -151,6 +151,15 @@ export const generateUserResolvers = (models) => {
       createUser: async (obj, args, context, info) => {
         const input = args.input;
         input['password'] = await hashPassword(input['password']);
+        const {email} = input;
+        const user = await UserModel.findOne({
+          where: {
+            email,
+          },
+        });
+        if (user) {
+          throw new ApolloError('Email was taken', 'RES_MESSAGE');
+        }
         return UserModel.create(input);
       },
       updateProfile: async (obj, args, context, info) => {
