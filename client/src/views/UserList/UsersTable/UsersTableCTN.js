@@ -64,7 +64,7 @@ export default compose(
         offset,
       }));
     },
-    handleDelete: ({deleteUserQuery, usersQuery}) => async (e, id) => {
+    handleDelete: ({deleteUserQuery, usersQuery}) => (id) => async (e) => {
       await deleteUserQuery({
         variables: {id},
       });

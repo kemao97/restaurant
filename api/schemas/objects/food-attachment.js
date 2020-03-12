@@ -22,7 +22,7 @@ const foodAttachmentCRUD = gql`
     createFoodAttachment(foodId: ID!, file: Upload!): Boolean
       @retrieve(objectName: "Food", idPath: "foodId")
     deleteFoodAttachment(id: ID!): Boolean
-      @delete(objectName: "FoodAttachment")
+      @retrieve(objectName: "FoodAttachment")
   }
 `;
 
@@ -45,6 +45,14 @@ export const generateFoodAttachmentResolvers = (models) => {
           path: `/uploads/${filenameStorage}`,
         };
         await foodRetrieve.createFoodAttachment(foodAttachment);
+        return true;
+      },
+      deleteFoodAttachment: async (obj, args, context, info) => {
+        const attachment = context.foodAttachmentRetrieve;
+        await attachment.destroy();
+        await fs.unlink(`./public/${attachment.path}`, (err) => {
+          console.log(err);
+        });
         return true;
       },
     },

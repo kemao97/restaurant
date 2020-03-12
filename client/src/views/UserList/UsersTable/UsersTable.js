@@ -21,6 +21,7 @@ import UsersTableCTN from './UsersTableCTN';
 import {Pagination} from '@material-ui/lab';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
+import {AlertDialog} from '../../../components';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -95,9 +96,14 @@ const UsersTable = ({
                       {moment(user.updatedAt).format('DD/MM/YYYY')}
                     </TableCell>
                     <TableCell>
-                      <IconButton onClick={(e) => handleDelete(e, user.id)}>
-                        <DeleteIcon />
-                      </IconButton>
+                      <AlertDialog
+                        button={
+                          <IconButton>
+                            <DeleteIcon />
+                          </IconButton>
+                        }
+                        handleSubmit={handleDelete(user.id)}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}

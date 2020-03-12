@@ -11,6 +11,7 @@ import IconButton from '@material-ui/core/IconButton';
 import FoodsTableCTN from './FoodsTableCTN';
 import {compose} from 'recompose';
 import EditIcon from '@material-ui/icons/Edit';
+import {AlertDialog} from '../../../components/AlertDialog';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -29,6 +30,9 @@ const useStyles = makeStyles((theme) => ({
   },
   actions: {
     justifyContent: 'flex-end',
+  },
+  dFlex: {
+    display: 'flex',
   },
 }));
 
@@ -74,13 +78,18 @@ const FoodsTable = ({
                     <TableCell>
                       {moment(food.updatedAt).format('DD/MM/YYYY')}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className={classes.dFlex}>
                       <IconButton href={`/food/${food.id}`}>
                         <EditIcon />
                       </IconButton>
-                      <IconButton onClick={(e) => handleDelete(e, food.id)}>
-                        <DeleteIcon />
-                      </IconButton>
+                      <AlertDialog
+                        button={
+                          <IconButton>
+                            <DeleteIcon />
+                          </IconButton>
+                        }
+                        handleSubmit={handleDelete(food.id)}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}

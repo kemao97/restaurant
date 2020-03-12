@@ -26,10 +26,10 @@ const FoodUpdate = ({
       <Container className={classes.container} component="main" maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
+          <Avatar sizes='large' className={classes.avatar}>
             <FastfoodIcon />
           </Avatar>
-          <Typography component="h1" variant="h5">
+          <Typography variant="h1">
             Update Food
           </Typography>
           <form
@@ -118,6 +118,8 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     margin: theme.spacing(1),
+    width: theme.spacing(7),
+    height: theme.spacing(7),
     backgroundColor: theme.palette.secondary.main,
   },
   form: {

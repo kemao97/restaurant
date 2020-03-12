@@ -8,8 +8,10 @@ import PropTypes from 'prop-types';
 import {compose} from 'recompose';
 import FoodUploadCTN from './FoodUploadCTN';
 import {Img} from '../../../components/Img';
+import DeleteIcon from '@material-ui/icons/Delete';
+import {AlertDialog} from '../../../components';
 
-const FoodUpload = ({handleChange, foodAttachments}) => {
+const FoodUpload = ({handleChange, foodAttachments, handleDelete}) => {
   const classes = useStyles();
 
   return (
@@ -39,7 +41,21 @@ const FoodUpload = ({handleChange, foodAttachments}) => {
       <div>
         {foodAttachments.map((attachment) => {
           return (
-            <Img className={classes.image} src={attachment.path} key={attachment.id} />
+            <div className={classes.imageItem} key={attachment.id}>
+              <div>
+                <Img className={classes.image} src={attachment.path} />
+              </div>
+              <div className={classes.flex1}>
+                <AlertDialog
+                  button={
+                    <IconButton>
+                      <DeleteIcon />
+                    </IconButton>
+                  }
+                  handleSubmit={handleDelete(attachment.id)}
+                />
+              </div>
+            </div>
           );
         })}
       </div>
@@ -69,6 +85,9 @@ const useStyles = makeStyles((theme) => ({
   dFlex: {
     display: 'flex',
   },
+  flex1: {
+    flex: 1,
+  },
   uploadContainer: {
     flexDirection: 'column',
     display: 'flex',
@@ -76,6 +95,10 @@ const useStyles = makeStyles((theme) => ({
   },
   image: {
     width: '100%',
+  },
+  imageItem: {
+    display: 'flex',
+    marginTop: 10,
   },
 }));
 

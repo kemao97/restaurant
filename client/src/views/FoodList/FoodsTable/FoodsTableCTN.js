@@ -64,7 +64,7 @@ export default compose(
         offset,
       }));
     },
-    handleDelete: ({deleteFoodQuery, foodsQuery}) => async (e, id) => {
+    handleDelete: ({deleteFoodQuery, foodsQuery}) => (id) => async (e) => {
       await deleteFoodQuery({
         variables: {id},
       });

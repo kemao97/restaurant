@@ -20,16 +20,18 @@ const ATTACH_UPLOAD_QUERY = gql`
   }
 `;
 
+const DELETE_FILE_QUERY = gql`
+  mutation deleteFoodAttachment($id: ID!) {
+    deleteFoodAttachment(id: $id)
+  }
+`;
+
 export default compose(
   withRouter,
   withProps(({foodId, match}) => ({foodId: foodId || match.params.id})),
   graphql(ATTACHMENT_QUERY, {name: 'attachmentQuery'}),
-  graphql(ATTACH_UPLOAD_QUERY, {
-    name: 'createFoodAttachmentQuery',
-    options: {
-      fetchPolicy: 'no-cache',
-    },
-  }),
+  graphql(ATTACH_UPLOAD_QUERY, {name: 'createFoodAttachmentQuery'}),
+  graphql(DELETE_FILE_QUERY, {name: 'deleteFileQuery'}),
   branch(
     ({attachmentQuery}) => attachmentQuery.food,
     withProps(({attachmentQuery}) => ({
@@ -42,6 +44,14 @@ export default compose(
       const file = e.target.validity.valid && e.target.files[0];
       await createFoodAttachmentQuery({variables: {foodId, file}});
       foodAttachmentRefetch();
+    },
+    handleDelete: ({deleteFileQuery, attachmentQuery}) => (fileId) => async (e) => {
+      await deleteFileQuery({
+        variables: {
+          id: fileId,
+        },
+      });
+      attachmentQuery.refetch();
     },
   }),
 );
