@@ -2,6 +2,7 @@ import {compose, withHandlers, withState} from 'recompose';
 import {gql} from 'apollo-boost';
 import {graphql} from '@apollo/react-hoc';
 import {withRouter} from 'react-router-dom';
+import {get, pick} from 'lodash';
 
 const CREATE_FOOD_QUERY = gql`
   mutation createFood($input: CreateFoodInput!) {
@@ -17,15 +18,9 @@ const formInit = {
   price: null,
 };
 
-const alertInit = {
-  color: undefined,
-  message: undefined,
-};
-
 export default compose(
   withRouter,
   withState('form', 'updateForm', formInit),
-  withState('alert', 'updateAlert', alertInit),
   graphql(CREATE_FOOD_QUERY, {name: 'createFoodQuery'}),
   withHandlers({
     onChange: ({form, updateForm}) => async (e) => {
@@ -35,24 +30,27 @@ export default compose(
         [name]: value,
       });
     },
-    onSubmit: ({createFoodQuery, form, history, dispatch, updateAlert}) => async (e) => {
+    onSubmit: ({createFoodQuery, form, history, updateForm}) => async (e) => {
       e.preventDefault();
-      try {
-        await updateAlert(alertInit);
-        await createFoodQuery({
-          variables: {
-            input: {
-              ...form,
-              price: parseInt(form.price) || null,
-            },
-          },
-        });
+      updateForm((prev) => ({
+        ...prev,
+        errors: undefined,
+        price: prev.price || '0',
+      }));
+      form.price = parseInt(form.price) || 0;
+      const data = await createFoodQuery({
+        variables: {
+          input: pick(form, [
+            'name',
+            'price',
+            'description',
+          ]),
+        },
+      });
+      if (get(data, 'data.createFood')) {
         history.push('/foods');
-      } catch (e) {
-        updateAlert({
-          color: 'error',
-          message: 'Có lỗi xảy ra',
-        });
+      } else {
+        await data.handleFormErrors({updateForm});
       }
     },
   }),

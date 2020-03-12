@@ -40,7 +40,7 @@ const errorLink = onError(({
   graphQLErrors,
   networkError,
 }) => {
-  if (graphQLErrors) {
+  if (graphQLErrors && response) {
     response.handleFormErrors = handleFormErrors(get(response, 'errors[0]'));
   }
   if (networkError) {

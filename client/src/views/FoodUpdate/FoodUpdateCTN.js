@@ -2,6 +2,7 @@ import {branch, compose, lifecycle, withHandlers, withProps, withState} from 're
 import {gql} from 'apollo-boost';
 import {graphql} from '@apollo/react-hoc';
 import {withRouter} from 'react-router-dom';
+import {get, pick} from "lodash";
 
 const FOOD_QUERY = gql`
   query food($id: ID!) {
@@ -29,11 +30,6 @@ const formInit = {
   price: null,
 };
 
-const alertInit = {
-  color: undefined,
-  message: undefined,
-};
-
 export default compose(
   withRouter,
   withProps(({id, match}) => ({
@@ -46,7 +42,6 @@ export default compose(
     withProps(({foodQuery}) => ({food: foodQuery.food})),
   ),
   withState('form', 'updateForm', formInit),
-  withState('alert', 'updateAlert', alertInit),
   withHandlers({
     onChange: ({form, updateForm}) => async (e) => {
       const {value, name} = e.target;
@@ -55,25 +50,28 @@ export default compose(
         [name]: value,
       }));
     },
-    onSubmit: ({id, updateFoodQuery, form, history, updateAlert}) => async (e) => {
+    onSubmit: ({id, updateFoodQuery, form, history, updateForm}) => async (e) => {
       e.preventDefault();
-      try {
-        await updateAlert(alertInit);
-        await updateFoodQuery({
-          variables: {
-            id,
-            input: {
-              ...form,
-              price: parseInt(form.price) || null,
-            },
-          },
-        });
+      updateForm((prev) => ({
+        ...prev,
+        errors: undefined,
+        price: prev.price || '0',
+      }));
+      form.price = parseInt(form.price) || 0;
+      const data = await updateFoodQuery({
+        variables: {
+          id,
+          input: pick(form, [
+            'name',
+            'price',
+            'description',
+          ]),
+        },
+      });
+      if (get(data, 'data.updateFood')) {
         history.push('/foods');
-      } catch (e) {
-        updateAlert({
-          color: 'error',
-          message: 'Có lỗi xảy ra',
-        });
+      } else {
+        await data.handleFormErrors({updateForm});
       }
     },
   }),

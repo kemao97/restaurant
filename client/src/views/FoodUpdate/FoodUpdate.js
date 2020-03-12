@@ -3,21 +3,20 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import PropTypes from 'prop-types';
-import {Alert} from '@material-ui/lab';
 import {compose} from 'recompose';
 import FoodUpdateCTN from './FoodUpdateCTN';
 import Grid from '@material-ui/core/Grid';
 import {FoodUpload} from '../FoodUpdate';
+import FastfoodIcon from '@material-ui/icons/Fastfood';
+import {get} from 'lodash';
 
 const FoodUpdate = ({
   onChange,
   onSubmit,
-  alert,
   form,
 }) => {
   const classes = useStyles();
@@ -28,7 +27,7 @@ const FoodUpdate = ({
         <CssBaseline />
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
+            <FastfoodIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
             Update Food
@@ -38,9 +37,6 @@ const FoodUpdate = ({
             noValidate
             onSubmit={onSubmit}
           >
-            {alert.message && (
-              <Alert variant='filled' severity={alert.color}>{alert.message}</Alert>
-            )}
             <TextField
               variant="outlined"
               margin="normal"
@@ -50,6 +46,8 @@ const FoodUpdate = ({
               label="Name"
               name="name"
               value={form.name}
+              error={get(form, 'errors.name')}
+              helperText={get(form, 'errors.name')}
               autoFocus
               onChange={onChange}
             />
@@ -58,6 +56,9 @@ const FoodUpdate = ({
               margin="normal"
               required
               fullWidth
+              InputLabelProps={{shrink: form.price}}
+              error={get(form, 'errors.price')}
+              helperText={get(form, 'errors.price')}
               value={form.price}
               name="price"
               label="Price"
@@ -72,6 +73,8 @@ const FoodUpdate = ({
               fullWidth
               multiline
               rows={4}
+              error={get(form, 'errors.description')}
+              helperText={get(form, 'errors.description')}
               value={form.description}
               name="description"
               label="Description"
@@ -99,12 +102,10 @@ const FoodUpdate = ({
 FoodUpdate.propTypes = {
   onChange: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  alert: PropTypes.object.isRequired,
   form: PropTypes.object,
 };
 
 FoodUpdate.defaultProps = {
-  alert: {},
   form: {},
 };
 

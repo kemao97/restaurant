@@ -32,26 +32,24 @@ export default compose(
     },
     onSubmit: ({createUserQuery, form, history, updateForm}) => async (e) => {
       e.preventDefault();
-      try {
-        await updateForm((prev) => ({
-          ...prev,
-          errors: undefined,
-        }));
-        const data = await createUserQuery({
-          variables: {
-            input: pick(form, [
-              'email',
-              'password',
-            ]),
-          },
-        });
-        if (get(data, 'data.createUser')) {
-          history.push('/users');
-        } else {
-          await data.handleFormErrors({updateForm});
-        }
-      } catch (e) {
-        console.log(e);
+      await updateForm((prev) => ({
+        ...prev,
+        errors: undefined,
+      }));
+      const data = await createUserQuery({
+        variables: {
+          input: pick(form, [
+            'email',
+            'password',
+            'address',
+            'phone',
+          ]),
+        },
+      });
+      if (get(data, 'data.createUser')) {
+        history.push('/users');
+      } else {
+        await data.handleFormErrors({updateForm});
       }
     },
   }),

@@ -1,6 +1,7 @@
 import {gql} from 'apollo-server-express';
 import {encodeGlobalID} from '../../utils';
 import {get} from 'lodash';
+import {number, object, string} from 'yup';
 
 export const typename = 'Food';
 
@@ -58,8 +59,10 @@ const foodCRUD = gql`
   extend type Mutation {
     createFood(input: CreateFoodInput!): Food
       @create(objectName: "Food")
+      @validate(yupName: "yupFood")
     updateFood(id: ID!, input: UpdateFoodInput!): Food
       @update(objectName: "Food")
+      @validate(yupName: "yupFood")
     deleteFood(id: ID!): Boolean
       @delete(objectName: "Food")
   }
@@ -70,6 +73,24 @@ export const foodQueries = [
   foodPage,
   foodCRUD,
 ];
+
+export const yupFood = async (args, context, options) => {
+  const validateFieldConfig = object({
+    name: string()
+      .required()
+      .max(100),
+    price: number()
+      .required()
+      .min(1)
+      .max(1000),
+    description: string()
+      .required()
+      .max(500),
+  });
+  return {
+    validateFieldConfig,
+  };
+};
 
 export const generateFoodResolvers = (models) => {
   const {FoodModel} = models;

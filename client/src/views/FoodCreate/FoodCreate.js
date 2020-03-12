@@ -3,7 +3,6 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -11,11 +10,13 @@ import PropTypes from 'prop-types';
 import {Alert} from '@material-ui/lab';
 import {compose} from 'recompose';
 import FoodCreateCTN from './FoodCreateCTN';
+import FastfoodIcon from '@material-ui/icons/Fastfood';
+import {get} from 'lodash';
 
 const FoodCreate = ({
   onChange,
   onSubmit,
-  alert,
+  form,
 }) => {
   const classes = useStyles();
 
@@ -24,7 +25,7 @@ const FoodCreate = ({
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
+          <FastfoodIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
           Create Food
@@ -45,6 +46,9 @@ const FoodCreate = ({
             id="name"
             label="Name"
             name="name"
+            error={get(form, 'errors.name')}
+            helperText={get(form, 'errors.name')}
+            value={form.name}
             autoFocus
             onChange={onChange}
           />
@@ -53,6 +57,10 @@ const FoodCreate = ({
             margin="normal"
             required
             fullWidth
+            value={form.price}
+            InputLabelProps={{shrink: form.price}}
+            error={get(form, 'errors.price')}
+            helperText={get(form, 'errors.price')}
             name="price"
             label="Price"
             type="number"
@@ -65,6 +73,9 @@ const FoodCreate = ({
             required
             fullWidth
             multiline
+            value={form.description}
+            error={get(form, 'errors.description')}
+            helperText={get(form, 'errors.description')}
             rows={4}
             name="description"
             label="Description"
@@ -90,11 +101,11 @@ const FoodCreate = ({
 FoodCreate.propTypes = {
   onChange: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  alert: PropTypes.object.isRequired,
+  form: PropTypes.object,
 };
 
 FoodCreate.defaultProps = {
-  alert: {},
+  form: {},
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -106,6 +117,8 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     margin: theme.spacing(1),
+    width: theme.spacing(7),
+    height: theme.spacing(7),
     backgroundColor: theme.palette.secondary.main,
   },
   form: {

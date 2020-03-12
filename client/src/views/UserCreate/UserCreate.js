@@ -3,7 +3,6 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -12,6 +11,8 @@ import PropTypes from 'prop-types';
 import {Alert} from '@material-ui/lab';
 import UserCreateCTN from './UserCreateCTN';
 import {get} from 'lodash';
+import {faUserPlus} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 const UserCreate = ({
   onChange,
@@ -24,10 +25,10 @@ const UserCreate = ({
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
+        <Avatar sizes='large' className={classes.avatar}>
+          <FontAwesomeIcon icon={faUserPlus} />
         </Avatar>
-        <Typography component="h1" variant="h5">
+        <Typography variant="h1">
           Sign Up
         </Typography>
         <form
@@ -45,7 +46,6 @@ const UserCreate = ({
             margin="normal"
             required
             fullWidth
-            id="email"
             label="Email Address"
             name="email"
             autoComplete="email"
@@ -62,10 +62,29 @@ const UserCreate = ({
             name="password"
             label="Password"
             type="password"
-            id="password"
             error={!!get(form, 'errors.password')}
             helperText={get(form, 'errors.password')}
             autoComplete="current-password"
+            onChange={onChange}
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            label="Address"
+            name="address"
+            error={!!get(form, 'errors.address')}
+            helperText={get(form, 'errors.address')}
+            onChange={onChange}
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            label="Phone"
+            name="phone"
+            error={!!get(form, 'errors.phone')}
+            helperText={get(form, 'errors.phone')}
             onChange={onChange}
           />
           <Button
@@ -98,6 +117,8 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     margin: theme.spacing(1),
+    width: theme.spacing(7),
+    height: theme.spacing(7),
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
