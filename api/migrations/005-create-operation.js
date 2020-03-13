@@ -6,6 +6,14 @@ const createOperation = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
       },
+      name: {
+        type: Sequelize.STRING(100),
+        allowNull: false,
+      },
+      description: {
+        type: Sequelize.STRING(500),
+        allowNull: false,
+      },
       roleId: {
         type: Sequelize.UUID,
         allowNull: false,

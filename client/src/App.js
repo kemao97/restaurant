@@ -107,6 +107,10 @@ const handleFormErrors = (errors) => async ({updateForm}) => {
     }));
     return;
   }
+  if (typeError === 'AUTHENTICATE') {
+    console.log('Authorization error');
+    return;
+  }
   updateForm((prev) => ({
     ...prev,
     errors: {

@@ -46,6 +46,7 @@ const userPage = gql`
   
   extend type Query {
     users(options: UserPageOptions): UserPage!
+      @auth(operations: ["user.read"])
   }
 `;
 
@@ -61,7 +62,7 @@ const userCRUD = gql`
   }
   
   extend type Query {
-    viewer: User
+    viewer: User @auth(operations: ["user.read"])
     user(id: ID!): User
       @retrieve(objectName: "User", callResolver: false)
   }
@@ -69,10 +70,12 @@ const userCRUD = gql`
   extend type Mutation {
     createUser(input: CreateUserInput!): User
       @validate(yupName: "yupCreateUser")
+      @auth(operations: ["user.create"])
     updateProfile(input: UpdateUserInput!): User
       @validate(yupName: "yupUpdateUser")
     deleteUser(id: ID!): Boolean
       @delete(objectName: "User")
+      @auth(operations: ["user.delete"])
   }
 `;
 

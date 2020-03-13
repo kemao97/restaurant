@@ -16,13 +16,16 @@ const foodAttachmentCRUD = gql`
   extend type Query {
     foodAttachment(id: ID!): FoodAttachment
       @retrieve(objectName: "FoodAttachment", callResolver: false)
+      @auth(operations: ["food.read"])
   }
   
   extend type Mutation {
     createFoodAttachment(foodId: ID!, file: Upload!): Boolean
       @retrieve(objectName: "Food", idPath: "foodId")
+      @auth(operations: ["food.create"])
     deleteFoodAttachment(id: ID!): Boolean
       @retrieve(objectName: "FoodAttachment")
+      @auth(operations: ["food.delete"])
   }
 `;
 

@@ -3,6 +3,7 @@ import {getPayloadFromToken} from '../utils/auth';
 import path from 'path';
 import fs from 'fs';
 import {
+  AuthDirective,
   CreateObject,
   DeleteObject,
   RetrieveObject,
@@ -86,18 +87,25 @@ const createSchema = (models) => {
       };
     }
 
-    if (error.originalError instanceof ApolloError &&
-      error.extensions.code === 'RES_MESSAGE') {
-      return {
-        type: 'RES_MESSAGE',
-        message: error.message,
-      };
+    if (error.originalError instanceof ApolloError) {
+      switch (error.extensions.code) {
+      case 'RES_MESSAGE':
+        return {
+          type: 'RES_MESSAGE',
+          message: error.message,
+        };
+      case 'AUTHORIZATION':
+        return {
+          type: 'AUTHORIZATION',
+          message: error.message,
+        };
+      default:
+        return {
+          type: 'INTERNAL_SERVER_ERROR',
+          message: 'Internal Server Error',
+        };
+      }
     }
-
-    return {
-      type: 'INTERNAL_SERVER_ERROR',
-      message: 'Internal Server Error',
-    };
   };
 
   return {
@@ -110,6 +118,7 @@ const createSchema = (models) => {
       create: CreateObject,
       update: UpdateObject,
       delete: DeleteObject,
+      auth: AuthDirective,
     },
     formatError,
   };

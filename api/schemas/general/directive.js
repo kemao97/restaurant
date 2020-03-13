@@ -1,10 +1,11 @@
-import {gql, SchemaDirectiveVisitor} from 'apollo-server-express';
+import {ApolloError, gql, SchemaDirectiveVisitor} from 'apollo-server-express';
 import {defaultFieldResolver} from 'graphql';
 import {camelCase, get, merge, groupBy, mapValues} from 'lodash';
 import {decodeGlobalID} from '../../utils';
 import fs from 'fs';
 import path from 'path';
 import {ValidationError} from 'yup';
+import {OPERATIONS} from '../../utils/constants';
 
 const readYupOfFile = (dirPath) => {
   const yupObject = {};
@@ -55,6 +56,10 @@ export const directiveQueries = gql`
     objectName: String
     idPath: String = "id"
     modelName: String
+  ) on FIELD_DEFINITION
+  
+  directive @auth(
+    operations: [String]
   ) on FIELD_DEFINITION
 `;
 
@@ -171,4 +176,42 @@ export class DeleteObject extends SchemaDirectiveVisitor {
 export const actionDeleteObject = async (args, context, options) => {
   const objectRetrieve = await actionRetrieveObject(args, context, options);
   return Boolean(await objectRetrieve.destroy());
+};
+
+export class AuthDirective extends SchemaDirectiveVisitor {
+  visitFieldDefinition(field, details) {
+    const {resolve = defaultFieldResolver} = field;
+    field['resolve'] = async (obj, args, context, info) => {
+      const isAccept = await actionAuthDirective(args, context, this.args);
+      if (!isAccept) {
+        throw new ApolloError(`You don't have permission`, 'AUTHORIZATION');
+      }
+      return resolve.call(this, obj, args, context, info);
+    };
+  }
+}
+
+export const actionAuthDirective = async (args, context, options) => {
+  const {operations} = options;
+  const {OperationModel} = context.models;
+  const operationIds = operations.map((operation) => {
+    const operationId = get(OPERATIONS, operation);
+    if (!operationId) {
+      throw new Error(`Permission don't exist`);
+    }
+    return operationId;
+  });
+  const {viewer} = context;
+  const result = await viewer.getRoles({
+    include: [{
+      model: OperationModel,
+      required: true,
+      where: {
+        id: {
+          $or: operationIds,
+        },
+      },
+    }],
+  });
+  return !!result.length;
 };

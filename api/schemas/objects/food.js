@@ -37,6 +37,7 @@ const foodPage = gql`
   
   extend type Query {
     foods(options: FoodPageOptions): FoodPage
+      @auth(operations: ["food.read"])
   }
 `;
 
@@ -54,17 +55,21 @@ const foodCRUD = gql`
   extend type Query {
     food(id: ID!): Food
       @retrieve(objectName: "Food", callResolver: false)
+      @auth(operations: ["food.read"])
   }
   
   extend type Mutation {
     createFood(input: CreateFoodInput!): Food
       @create(objectName: "Food")
       @validate(yupName: "yupFood")
+      @auth(operations: ["food.create"])
     updateFood(id: ID!, input: UpdateFoodInput!): Food
       @update(objectName: "Food")
       @validate(yupName: "yupFood")
+      @auth(operations: ["food.update"])
     deleteFood(id: ID!): Boolean
       @delete(objectName: "Food")
+      @auth(operations: ["food.delete"])
   }
 `;
 
