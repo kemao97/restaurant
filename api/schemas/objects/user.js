@@ -62,7 +62,7 @@ const userCRUD = gql`
   }
   
   extend type Query {
-    viewer: User @auth(operations: ["user.read"])
+    viewer: User
     user(id: ID!): User
       @retrieve(objectName: "User", callResolver: false)
   }

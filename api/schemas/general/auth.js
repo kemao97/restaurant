@@ -2,6 +2,7 @@ import {gql} from 'apollo-server-express';
 import {createToken, comparePassword} from '../../utils/auth';
 import {ApolloError} from 'apollo-server-express';
 import {object, string} from 'yup';
+import {actionAuthDirective} from './directive';
 
 export const authQueries = gql`
   input LoginInput {
@@ -10,6 +11,7 @@ export const authQueries = gql`
   }
 
   extend type Mutation {
+    isAccept(input: String!): Boolean
     login(input: LoginInput!): User!
       @validate(yupName: "yupLogin")
     logout: Boolean!
@@ -36,6 +38,12 @@ export const generateAuthResolvers = (models) => {
   const {UserModel} = models;
   return {
     Mutation: {
+      isAccept: (obj, args, context, info) => {
+        const {input} = args;
+        return actionAuthDirective({}, context, {
+          operations: [input],
+        });
+      },
       login: async (obj, args, context, info) => {
         const {viewer, res} = context;
         if (viewer) {

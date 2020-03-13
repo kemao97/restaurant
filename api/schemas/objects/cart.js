@@ -1,6 +1,6 @@
 import {gql} from 'apollo-server-express';
 import {encodeGlobalID} from '../../utils';
-import {head} from "lodash";
+import {head} from 'lodash';
 
 const typename = 'Cart';
 

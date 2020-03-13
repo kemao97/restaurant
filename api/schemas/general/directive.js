@@ -193,6 +193,7 @@ export class AuthDirective extends SchemaDirectiveVisitor {
 
 export const actionAuthDirective = async (args, context, options) => {
   const {operations} = options;
+  console.log(operations);
   const {OperationModel} = context.models;
   const operationIds = operations.map((operation) => {
     const operationId = get(OPERATIONS, operation);

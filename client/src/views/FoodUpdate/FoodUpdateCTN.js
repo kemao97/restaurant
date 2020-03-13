@@ -2,7 +2,7 @@ import {branch, compose, lifecycle, withHandlers, withProps, withState} from 're
 import {gql} from 'apollo-boost';
 import {graphql} from '@apollo/react-hoc';
 import {withRouter} from 'react-router-dom';
-import {get, pick} from "lodash";
+import {get, pick} from 'lodash';
 
 const FOOD_QUERY = gql`
   query food($id: ID!) {

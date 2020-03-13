@@ -1,3 +1,1 @@
-import {secure, unSecure} from './secure';
-
-export {secure, unSecure};
+export {secure, unSecure, auth} from './secure';

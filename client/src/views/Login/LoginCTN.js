@@ -52,7 +52,7 @@ export default compose(
       const user = get(data, 'data.login');
       if (user) {
         await dispatch(login(user));
-        history.push('/users');
+        history.push('/');
       } else {
         await data.handleFormErrors({updateForm});
       }

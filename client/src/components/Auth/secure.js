@@ -1,9 +1,17 @@
 import React from 'react';
-import {Redirect} from 'react-router-dom';
-import {branch, compose, renderComponent} from 'recompose';
+import {Redirect, withRouter} from 'react-router-dom';
+import {branch, compose, lifecycle, renderComponent} from 'recompose';
 import {connect} from 'react-redux';
+import {gql} from 'apollo-boost';
+import {graphql} from '@apollo/react-hoc';
 
-const secure = (wrappedComponent) =>
+const authorizationQuery = gql`
+  mutation isAccept($input: String!) {
+    isAccept(input: $input)
+  }
+`;
+
+export const secure = (wrappedComponent) =>
   compose(
     connect(({viewer}) => ({viewer})),
     branch(
@@ -12,7 +20,7 @@ const secure = (wrappedComponent) =>
     ),
   )(wrappedComponent);
 
-const unSecure = (wrappedComponent) =>
+export const unSecure = (wrappedComponent) =>
   compose(
     connect(({viewer}) => ({viewer})),
     branch(
@@ -21,4 +29,21 @@ const unSecure = (wrappedComponent) =>
     ),
   )(wrappedComponent);
 
-export {secure, unSecure};
+export const auth = (path) => (wrappedComponent) =>
+  compose(
+    withRouter,
+    graphql(authorizationQuery, {name: 'authQuery'}),
+    lifecycle({
+      async componentDidMount() {
+        const {authQuery, history} = this.props;
+        const result = await authQuery({
+          variables: {
+            input: path,
+          },
+        });
+        if (!result.data.isAccept) {
+          history.replace('/');
+        }
+      },
+    }),
+  )(wrappedComponent);

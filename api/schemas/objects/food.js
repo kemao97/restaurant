@@ -37,7 +37,6 @@ const foodPage = gql`
   
   extend type Query {
     foods(options: FoodPageOptions): FoodPage
-      @auth(operations: ["food.read"])
   }
 `;
 
