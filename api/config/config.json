@@ -3,7 +3,7 @@
     "username": "root",
     "password": "denhatkemao",
     "database": "restaurant",
-    "host": "localhost",
+    "host": "db",
     "dialect": "mysql",
     "port": "3306"
   },
