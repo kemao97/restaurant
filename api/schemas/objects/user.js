@@ -70,7 +70,6 @@ const userCRUD = gql`
   extend type Mutation {
     createUser(input: CreateUserInput!): User
       @validate(yupName: "yupCreateUser")
-      @auth(operations: ["user.create"])
     updateProfile(input: UpdateUserInput!): User
       @validate(yupName: "yupUpdateUser")
     deleteUser(id: ID!): Boolean
@@ -118,7 +117,7 @@ export const yupUpdateUser = async (args, context, options) => {
 };
 
 export const generateUserResolvers = (models) => {
-  const {UserModel} = models;
+  const {UserModel, RoleModel} = models;
   return {
     Query: {
       viewer: (obj, args, context, info) => {
@@ -153,6 +152,7 @@ export const generateUserResolvers = (models) => {
     Mutation: {
       createUser: async (obj, args, context, info) => {
         const input = args.input;
+        const {viewer} = context;
         input['password'] = await hashPassword(input['password']);
         const {email} = input;
         const user = await UserModel.findOne({
@@ -163,7 +163,14 @@ export const generateUserResolvers = (models) => {
         if (user) {
           throw new ApolloError('Email was taken', 'RES_MESSAGE');
         }
-        return UserModel.create(input);
+        const userCreated = await UserModel.create(input);
+        const adminRole = await RoleModel.findOne({
+          where: {
+            name: viewer ? 'admin' : 'customer',
+          },
+        });
+        await userCreated.addRole(adminRole);
+        return userCreated;
       },
       updateProfile: async (obj, args, context, info) => {
         const input = args.input;

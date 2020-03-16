@@ -17,10 +17,10 @@ const generateUserModel = (sequelize, DataTypes) => {
     phone: DataTypes.STRING,
   }, {tableName: 'User'});
   User.associate = (models) => {
-    const {UserModel, CartModel, RoleModel} = models;
+    const {UserModel, CartModel, RoleModel, UserRoleModel} = models;
     UserModel.hasMany(CartModel);
     UserModel.belongsToMany(RoleModel, {
-      through: 'UserRole',
+      through: UserRoleModel,
     });
   };
   return User;

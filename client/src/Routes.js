@@ -22,6 +22,7 @@ const Routes = () => (
       <Route path='/' exact component={HomeView} />
       <Route path='/cart' exact component={CartView} />
       <Route path='/login' exact component={unSecure(LoginView)} />
+      <Route path='/signup' exact component={unSecure(UserCreateView)} />
       <RouteWithLayout path='/dashboard' exact component={secure(DashboardView)} layout={MainLayout} />
       <RouteWithLayout path='/users' exact component={secure((auth('user.read'))(UserListView))} layout={MainLayout} />
       <RouteWithLayout path='/user' exact component={secure((auth('user.create'))(UserCreateView))} layout={MainLayout} />

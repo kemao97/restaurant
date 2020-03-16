@@ -69,15 +69,26 @@ const HomeNav = ({transparent, isLogged}) => {
             (<Button href='/account'>
               <Avatar alt='' src='' />
             </Button>) :
-            <Button
-              className={classes.signIn}
-              href='/login'
-              variant='contained'
-              color='secondary'
-              startIcon={<AccountCircleIcon fontSize='large' />}
-            >
-              Sign In
-            </Button>
+            (<div>
+              <Button
+                className={classes.signIn}
+                href='/login'
+                variant='contained'
+                color='secondary'
+                startIcon={<AccountCircleIcon fontSize='large' />}
+              >
+                Sign In
+              </Button>
+              <Button
+                className={classes.signIn}
+                href='/signup'
+                variant='contained'
+                color='primary'
+                startIcon={<AccountCircleIcon fontSize='large' />}
+              >
+                Sign Up
+              </Button>
+            </div>)
           }
           {isLogged && <Logout />}
         </Toolbar>

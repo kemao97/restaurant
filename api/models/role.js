@@ -9,9 +9,9 @@ const generateRoleModel = (sequelize, DataTypes) => {
     description: DataTypes.STRING,
   }, {tableName: 'Role'});
   Role.associate = (models) => {
-    const {RoleModel, UserModel, ResourceModel, OperationModel} = models;
+    const {RoleModel, UserModel, ResourceModel, OperationModel, UserRoleModel} = models;
     RoleModel.belongsToMany(UserModel, {
-      through: 'UserRole',
+      through: UserRoleModel,
     });
     RoleModel.belongsToMany(ResourceModel, {
       through: OperationModel,
