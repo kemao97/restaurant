@@ -22,7 +22,7 @@
     "eslint-config-google": "^0.14.0",
     "graphql": "^14.6.0",
     "lodash": "^4.17.15",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "prop-types": "^15.7.2",
     "react": "^16.13.0",
     "react-cookie": "^4.0.3",
